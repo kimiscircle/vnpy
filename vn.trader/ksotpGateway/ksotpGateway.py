@@ -8,9 +8,9 @@ vn.ksotp的gateway接入
 import os
 import json
 
-from vnksotpmd import MdApi
-from vnksotptd import TdApi
-from ksotpDataType import *
+from .vnksotpmd import MdApi
+from .vnksotptd import TdApi
+from .ksotpDataType import *
 from vtGateway import *
 
 # 以下为一些VT类型和CTP类型的映射字典
@@ -18,13 +18,13 @@ from vtGateway import *
 priceTypeMap = {}
 priceTypeMap[PRICETYPE_LIMITPRICE] = defineDict["KS_OTP_OPT_LimitPrice"]
 priceTypeMap[PRICETYPE_MARKETPRICE] = defineDict["KS_OTP_OPT_AnyPrice"]
-priceTypeMapReverse = {v: k for k, v in priceTypeMap.items()} 
+priceTypeMapReverse = {v: k for k, v in list(priceTypeMap.items())} 
 
 # 方向类型映射
 directionMap = {}
 directionMap[DIRECTION_LONG] = defineDict['KS_OTP_D_Buy']
 directionMap[DIRECTION_SHORT] = defineDict['KS_OTP_D_Sell']
-directionMapReverse = {v: k for k, v in directionMap.items()}
+directionMapReverse = {v: k for k, v in list(directionMap.items())}
 
 # 开平类型映射
 offsetMap = {}
@@ -32,7 +32,7 @@ offsetMap[OFFSET_OPEN] = defineDict['KS_OTP_OF_Open']
 offsetMap[OFFSET_CLOSE] = defineDict['KS_OTP_OF_Close']
 offsetMap[OFFSET_CLOSETODAY] = defineDict['KS_OTP_OF_CloseToday']
 offsetMap[OFFSET_CLOSEYESTERDAY] = defineDict['KS_OTP_OF_CloseYesterday']
-offsetMapReverse = {v:k for k,v in offsetMap.items()}
+offsetMapReverse = {v: k for k, v in list(offsetMap.items())}
 
 # 交易所类型映射
 exchangeMap = {}
@@ -43,13 +43,13 @@ exchangeMap[EXCHANGE_DCE] = 'DCE'
 exchangeMap[EXCHANGE_SSE] = 'SSE'
 exchangeMap[EXCHANGE_SZSE] = 'SZSE'
 exchangeMap[EXCHANGE_UNKNOWN] = ''
-exchangeMapReverse = {v:k for k,v in exchangeMap.items()}
+exchangeMapReverse = {v: k for k, v in list(exchangeMap.items())}
 
 # 持仓类型映射
 posiDirectionMap = {}
 posiDirectionMap[DIRECTION_LONG] = defineDict["KSVOC_PD_Buy"]
 posiDirectionMap[DIRECTION_SHORT] = defineDict["KSVOC_PD_Sell"]
-posiDirectionMapReverse = {v:k for k,v in posiDirectionMap.items()}
+posiDirectionMapReverse = {v: k for k, v in list(posiDirectionMap.items())}
 
 
 ########################################################################
@@ -81,7 +81,7 @@ class KsotpGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -96,7 +96,7 @@ class KsotpGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -213,7 +213,7 @@ class KsotpMdApi(MdApi):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'行情服务器连接成功'
+        log.logContent = '行情服务器连接成功'
         self.gateway.onLog(log)
         self.login()
     
@@ -226,7 +226,7 @@ class KsotpMdApi(MdApi):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'行情服务器连接断开'
+        log.logContent = '行情服务器连接断开'
         self.gateway.onLog(log)        
            
     #----------------------------------------------------------------------   
@@ -248,7 +248,7 @@ class KsotpMdApi(MdApi):
             
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'行情服务器登录完成'
+            log.logContent = '行情服务器登录完成'
             self.gateway.onLog(log)
             
             # 重新订阅之前订阅的合约
@@ -273,7 +273,7 @@ class KsotpMdApi(MdApi):
             
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'行情服务器登出完成'
+            log.logContent = '行情服务器登出完成'
             self.gateway.onLog(log)
                 
         # 否则，推送错误信息
@@ -303,7 +303,7 @@ class KsotpMdApi(MdApi):
         tick.gatewayName = self.gatewayName
         
         tick.symbol = data['InstrumentID']
-        tick.exchange = exchangeMapReverse.get(data['ExchangeID'], u'未知')
+        tick.exchange = exchangeMapReverse.get(data['ExchangeID'], '未知')
         tick.vtSymbol = '.'.join([tick.symbol, tick.exchange])
         
         tick.lastPrice = data['LastPrice']
@@ -1256,7 +1256,7 @@ class KsotpTdApi(TdApi):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'交易服务器连接成功'
+        log.logContent = '交易服务器连接成功'
         self.gateway.onLog(log)
         
         self.login()
@@ -1270,7 +1270,7 @@ class KsotpTdApi(TdApi):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'交易服务器连接断开'
+        log.logContent = '交易服务器连接断开'
         self.gateway.onLog(log)   
         
     #----------------------------------------------------------------------
@@ -1294,7 +1294,7 @@ class KsotpTdApi(TdApi):
             
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'交易服务器登录完成'
+            log.logContent = '交易服务器登录完成'
             self.gateway.onLog(log)
             
             # 确认结算信息
@@ -1322,7 +1322,7 @@ class KsotpTdApi(TdApi):
             
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'交易服务器登出完成'
+            log.logContent = '交易服务器登出完成'
             self.gateway.onLog(log)
                 
         # 否则，推送错误信息
@@ -1485,7 +1485,7 @@ class KsotpTdApi(TdApi):
         if last:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'交易合约信息获取完成'
+            log.logContent = '交易合约信息获取完成'
             self.gateway.onLog(log)
         
     #----------------------------------------------------------------------
@@ -1608,7 +1608,7 @@ class KsotpTdApi(TdApi):
         """确认结算信息回报"""
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'结算信息确认完成'
+        log.logContent = '结算信息确认完成'
         self.gateway.onLog(log)
         
         # 查询合约代码
@@ -1824,7 +1824,7 @@ def test():
     
     def print_log(event):
         log = event.dict_['data']
-        print ':'.join([log.logTime, log.logContent])
+        print(':'.join([log.logTime, log.logContent]))
     
     app = QtCore.QCoreApplication(sys.argv)    
 

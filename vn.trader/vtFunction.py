@@ -24,8 +24,8 @@ def safeUnicode(value):
         d = decimal.Decimal(str(value))
         if abs(d.as_tuple().exponent) > MAX_DECIMAL:
             value = round(value, ndigits=MAX_DECIMAL)
-    
-    return unicode(value)
+
+    return str(value)
 
 #----------------------------------------------------------------------
 def loadMongoSetting():

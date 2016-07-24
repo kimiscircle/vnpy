@@ -4,9 +4,8 @@
 海龟交易策略测试版
 """
 
-
-from ctaBase import *
-from ctaTemplate import CtaTemplate
+from .ctaBase import *
+from .ctaTemplate import CtaTemplate
 import numpy as np
 import talib as ta
 
@@ -14,7 +13,7 @@ import talib as ta
 class TurtleDemo(CtaTemplate):
     """海龟策略Demo"""
     className = 'TurtleDemo'
-    author = u'LL'
+    author = 'LL'
     
     # 策略参数
     breakLength = 20    #20日突破入市
@@ -92,7 +91,7 @@ class TurtleDemo(CtaTemplate):
     #----------------------------------------------------------------------
     def onInit(self):
         """初始化策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'海龟演示策略初始化')
+        self.writeCtaLog('海龟演示策略初始化')
         
         initData = self.loadDayBar(self.initDays)
         for bar in initData:
@@ -104,13 +103,13 @@ class TurtleDemo(CtaTemplate):
     #----------------------------------------------------------------------
     def onStart(self):
         """启动策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'海龟演示策略启动')
+        self.writeCtaLog('海龟演示策略启动')
         self.putEvent()
     
     #----------------------------------------------------------------------
     def onStop(self):
         """停止策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'海龟演示策略停止')
+        self.writeCtaLog('海龟演示策略停止')
         self.putEvent()
         
     #----------------------------------------------------------------------
@@ -275,8 +274,8 @@ class TurtleDemo(CtaTemplate):
                 self.buy(max(bar.open,self.PreEnterPrice+0.5*self.N),1)
                 #日志输出
                 output=open('record.log','a')
-                output.write(u'date %s, PreEnterPrice %s, buy price %s' 
-                    %(bar.date, self.PreEnterPrice,max(bar.open,self.PreEnterPrice+0.5*self.N))+'\n')
+                output.write('date %s, PreEnterPrice %s, buy price %s'
+                             % (bar.date, self.PreEnterPrice, max(bar.open, self.PreEnterPrice + 0.5 * self.N)) + '\n')
                 output.close()                    
                 #更新开仓次数计数器
                 self.OverCounter=self.OverCounter+1
@@ -294,8 +293,9 @@ class TurtleDemo(CtaTemplate):
                 self.MyPosition=0
                 #日志输出
                 output=open('record.log','a')
-                output.write(u'date %s, PreEnterPrice %s, sell price %s' 
-                    %(bar.date, self.PreEnterPrice,min(bar.open,max(self.ExitLong[-2],self.PreEnterPrice-2*self.N)))+'\n')
+                output.write('date %s, PreEnterPrice %s, sell price %s'
+                             % (bar.date, self.PreEnterPrice,
+                                min(bar.open, max(self.ExitLong[-2], self.PreEnterPrice - 2 * self.N))) + '\n')
                 output.close()
                 #重置当日交易状态
                 self.CurBarTrade=2
@@ -308,8 +308,8 @@ class TurtleDemo(CtaTemplate):
                 self.short(min(bar.open,self.PreEnterPrice-0.5*self.N),1)
                 #日志输出
                 output=open('record.log','a')
-                output.write(u'date %s, PreEnterPrice %s, short price %s' 
-                    %(bar.date, self.PreEnterPrice,min(bar.open,self.PreEnterPrice-0.5*self.N))+'\n')
+                output.write('date %s, PreEnterPrice %s, short price %s'
+                             % (bar.date, self.PreEnterPrice, min(bar.open, self.PreEnterPrice - 0.5 * self.N)) + '\n')
                 output.close()
                 #更新开仓次数计数器
                 self.OverCounter=self.OverCounter+1
@@ -327,8 +327,9 @@ class TurtleDemo(CtaTemplate):
                 self.MyPosition=0
                 #日志输出
                 output=open('record.log','a')
-                output.write(u'date %s, PreEnterPrice %s, cover price %s' 
-                    %(bar.date, self.PreEnterPrice,max(bar.open,min(self.ExitShort[-2],self.PreEnterPrice+2*self.N)))+'\n')
+                output.write('date %s, PreEnterPrice %s, cover price %s'
+                             % (bar.date, self.PreEnterPrice,
+                                max(bar.open, min(self.ExitShort[-2], self.PreEnterPrice + 2 * self.N))) + '\n')
                 output.close()
                 #重置当日交易状态
                 self.CurBarTrade=-2
@@ -340,8 +341,8 @@ class TurtleDemo(CtaTemplate):
                 self.buy(max(bar.open,self.EnterLong[-2]),1)
                 #日志输出
                 output=open('record.log','a')
-                output.write(u'date %s, PreEnterPrice %s, buy price %s' 
-                    %(bar.date, self.PreEnterPrice,(max(bar.open,self.EnterLong[-2]),1))+'\n')
+                output.write('date %s, PreEnterPrice %s, buy price %s'
+                             % (bar.date, self.PreEnterPrice, (max(bar.open, self.EnterLong[-2]), 1)) + '\n')
                 output.close()
                 #更新开仓次数计数器
                 self.OverCounter=self.OverCounter+1
@@ -357,8 +358,8 @@ class TurtleDemo(CtaTemplate):
                 self.short(min(bar.open,self.EnterShort[-2]),1)
                 #日志输出
                 output=open('record.log','a')
-                output.write(u'date %s, short price %s' 
-                    %(bar.date,min(bar.open,self.EnterShort[-2]))+'\n')
+                output.write('date %s, short price %s'
+                             % (bar.date, min(bar.open, self.EnterShort[-2])) + '\n')
                 output.close()
                 #更新开仓次数计数器
                 self.OverCounter=self.OverCounter+1
@@ -387,7 +388,7 @@ class OrderManagementDemo(CtaTemplate):
     """基于tick级别细粒度撤单追单测试demo"""
     
     className = 'OrderManagementDemo'
-    author = u'用Python的交易员'
+    author = '用Python的交易员'
     
     # 策略参数
     initDays = 10   # 初始化数据所用的天数
@@ -419,7 +420,7 @@ class OrderManagementDemo(CtaTemplate):
     #----------------------------------------------------------------------
     def onInit(self):
         """初始化策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'海龟演示策略初始化')
+        self.writeCtaLog('海龟演示策略初始化')
         
         initData = self.loadBar(self.initDays)
         for bar in initData:
@@ -430,13 +431,13 @@ class OrderManagementDemo(CtaTemplate):
     #----------------------------------------------------------------------
     def onStart(self):
         """启动策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'海龟演示策略启动')
+        self.writeCtaLog('海龟演示策略启动')
         self.putEvent()
     
     #----------------------------------------------------------------------
     def onStop(self):
         """停止策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'海龟演示策略停止')
+        self.writeCtaLog('海龟演示策略停止')
         self.putEvent()
         
     #----------------------------------------------------------------------
@@ -448,24 +449,24 @@ class OrderManagementDemo(CtaTemplate):
             self.buy(tick.lastprice - 10.0, 1)
 
         # CTA委托类型映射
-        if self.lastOrder != None and self.lastOrder.direction == u'多' and self.lastOrder.offset == u'开仓':
-            self.orderType = u'买开'
+        if self.lastOrder != None and self.lastOrder.direction == '多' and self.lastOrder.offset == '开仓':
+            self.orderType = '买开'
 
-        elif self.lastOrder != None and self.lastOrder.direction == u'多' and self.lastOrder.offset == u'平仓':
-            self.orderType = u'买平'
+        elif self.lastOrder != None and self.lastOrder.direction == '多' and self.lastOrder.offset == '平仓':
+            self.orderType = '买平'
 
-        elif self.lastOrder != None and self.lastOrder.direction == u'空' and self.lastOrder.offset == u'开仓':
-            self.orderType = u'卖开'
+        elif self.lastOrder != None and self.lastOrder.direction == '空' and self.lastOrder.offset == '开仓':
+            self.orderType = '卖开'
 
-        elif self.lastOrder != None and self.lastOrder.direction == u'空' and self.lastOrder.offset == u'平仓':
-            self.orderType = u'卖平'
+        elif self.lastOrder != None and self.lastOrder.direction == '空' and self.lastOrder.offset == '平仓':
+            self.orderType = '卖平'
                 
         # 不成交，即撤单，并追单
-        if self.lastOrder != None and self.lastOrder.status == u'未成交':
+        if self.lastOrder != None and self.lastOrder.status == '未成交':
 
             self.cancelOrder(self.lastOrder.vtOrderID)
             self.lastOrder = None
-        elif self.lastOrder != None and self.lastOrder.status == u'已撤销':
+        elif self.lastOrder != None and self.lastOrder.status == '已撤销':
         # 追单并设置为不能成交
             
             self.sendOrder(self.orderType, self.tick.lastprice - 10, 1)

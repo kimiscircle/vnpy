@@ -73,7 +73,7 @@ class MainEngine:
     def getInstrument(self):
         """获取合约"""
         event = Event(type_=EVENT_LOG)
-        log = u'查询合约信息'
+        log = '查询合约信息'
         event.dict_['log'] = log
         self.ee.put(event)          
         
@@ -121,7 +121,7 @@ class MainEngine:
                 self.dictInstrument = d['dictInstrument']
                 
                 event = Event(type_=EVENT_LOG)
-                log = u'合约信息读取完成'
+                log = '合约信息读取完成'
                 event.dict_['log'] = log
                 self.ee.put(event)            
     
@@ -150,7 +150,7 @@ class MainEngine:
             self.saveInstrument()
             
             event = Event(type_=EVENT_LOG)
-            log = u'合约信息查询完成'
+            log = '合约信息查询完成'
             event.dict_['log'] = log
             self.ee.put(event)            
 

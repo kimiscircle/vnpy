@@ -16,9 +16,9 @@ from lts_data_type import defineDict
 #----------------------------------------------------------------------
 def print_dict(d):
     """打印API收到的字典，该函数主要用于开发时的debug"""
-    print '-'*60
-    for key, value in d.items():
-        print key, ':', value
+    print('-' * 60)
+    for key, value in list(d.items()):
+        print(key, ':', value)
     
 
 ########################################################################
@@ -60,7 +60,7 @@ class DemoMdApi(MdApi):
     def onFrontConnected(self):
         """服务器连接"""
         event = Event(type_=EVENT_LOG)
-        event.dict_['log'] = u'行情服务器连接成功'
+        event.dict_['log'] = '行情服务器连接成功'
         self.__eventEngine.put(event)
         
         # 如果用户已经填入了用户名等等，则自动尝试连接
@@ -76,7 +76,7 @@ class DemoMdApi(MdApi):
     def onFrontDisconnected(self, n):
         """服务器断开"""
         event = Event(type_=EVENT_LOG)
-        event.dict_['log'] = u'行情服务器连接断开'
+        event.dict_['log'] = '行情服务器连接断开'
         self.__eventEngine.put(event)
         
     #---------------------------------------------------------------------- 
@@ -89,7 +89,7 @@ class DemoMdApi(MdApi):
     def onRspError(self, error, n, last):
         """错误回报"""
         event = Event(type_=EVENT_LOG)
-        log = u'行情错误回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+        log = '行情错误回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         event.dict_['log'] = log
         self.__eventEngine.put(event)
     
@@ -99,9 +99,9 @@ class DemoMdApi(MdApi):
         event = Event(type_=EVENT_LOG)
         
         if error['ErrorID'] == 0:
-            log = u'行情服务器登陆成功'
+            log = '行情服务器登陆成功'
         else:
-            log = u'登陆回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '登陆回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         
         event.dict_['log'] = log
         self.__eventEngine.put(event)
@@ -119,9 +119,9 @@ class DemoMdApi(MdApi):
         event = Event(type_=EVENT_LOG)
         
         if error['ErrorID'] == 0:
-            log = u'行情服务器登出成功'
+            log = '行情服务器登出成功'
         else:
-            log = u'登出回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '登出回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         
         event.dict_['log'] = log
         self.__eventEngine.put(event)
@@ -222,7 +222,7 @@ class DemoTdApi(TdApi):
     def onFrontConnected(self):
         """服务器连接"""
         event = Event(type_=EVENT_LOG)
-        event.dict_['log'] = u'交易服务器连接成功'
+        event.dict_['log'] = '交易服务器连接成功'
         self.__eventEngine.put(event)
         
         # 如果用户已经填入了用户名等等，则自动尝试连接
@@ -238,7 +238,7 @@ class DemoTdApi(TdApi):
     def onFrontDisconnected(self, n):
         """服务器断开"""
         event = Event(type_=EVENT_LOG)
-        event.dict_['log'] = u'交易服务器连接断开'
+        event.dict_['log'] = '交易服务器连接断开'
         self.__eventEngine.put(event)
         
     #----------------------------------------------------------------------  
@@ -250,7 +250,7 @@ class DemoTdApi(TdApi):
     def onRspError(self, error, n, last):
         """错误回报"""
         event = Event(type_=EVENT_LOG)
-        log = u'交易错误回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+        log = '交易错误回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         event.dict_['log'] = log
         self.__eventEngine.put(event)
     
@@ -260,9 +260,9 @@ class DemoTdApi(TdApi):
         event = Event(type_=EVENT_LOG)
         
         if error['ErrorID'] == 0:
-            log = u'交易服务器登陆成功'
+            log = '交易服务器登陆成功'
         else:
-            log = u'登陆回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '登陆回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         
         event.dict_['log'] = log
         self.__eventEngine.put(event)
@@ -276,9 +276,9 @@ class DemoTdApi(TdApi):
         event = Event(type_=EVENT_LOG)
         
         if error['ErrorID'] == 0:
-            log = u'交易服务器登出成功'
+            log = '交易服务器登出成功'
         else:
-            log = u'登出回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '登出回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         
         event.dict_['log'] = log
         self.__eventEngine.put(event)
@@ -287,7 +287,7 @@ class DemoTdApi(TdApi):
     def onRspOrderInsert(self, data, error, n, last):
         """发单错误（柜台）"""
         event = Event(type_=EVENT_LOG)
-        log = u' 发单错误回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+        log = ' 发单错误回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         event.dict_['log'] = log
         self.__eventEngine.put(event)   
         
@@ -295,7 +295,7 @@ class DemoTdApi(TdApi):
     def onRspOrderAction(self, data, error, n, last):
         """撤单错误（柜台）"""
         event = Event(type_=EVENT_LOG)
-        log = u'撤单错误回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+        log = '撤单错误回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         event.dict_['log'] = log
         self.__eventEngine.put(event)
 
@@ -329,7 +329,7 @@ class DemoTdApi(TdApi):
             self.__eventEngine.put(event)
         else:
             event = Event(type_=EVENT_LOG)
-            log = u'合约投资者回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '合约投资者回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
             event.dict_['log'] = log
             self.__eventEngine.put(event)        
         
@@ -342,7 +342,7 @@ class DemoTdApi(TdApi):
             self.__eventEngine.put(event)
         else:
             event = Event(type_=EVENT_LOG)
-            log = u'合约投资者回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '合约投资者回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
             event.dict_['log'] = log
             self.__eventEngine.put(event)
     
@@ -360,7 +360,7 @@ class DemoTdApi(TdApi):
             self.__eventEngine.put(event)
         else:
             event = Event(type_=EVENT_LOG)
-            log = u'账户查询回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '账户查询回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
             event.dict_['log'] = log
             self.__eventEngine.put(event)
         
@@ -423,7 +423,7 @@ class DemoTdApi(TdApi):
             self.__eventEngine.put(event)
         else:
             event = Event(type_=EVENT_LOG)
-            log = u'持仓查询回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '持仓查询回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
             event.dict_['log'] = log
             self.__eventEngine.put(event)
 
@@ -461,7 +461,7 @@ class DemoTdApi(TdApi):
     def onErrRtnOrderInsert(self, data, error):
         """发单错误回报（交易所）"""
         event = Event(type_=EVENT_LOG)
-        log = u'发单错误回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+        log = '发单错误回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         event.dict_['log'] = log
         self.__eventEngine.put(event)
         
@@ -469,7 +469,7 @@ class DemoTdApi(TdApi):
     def onErrRtnOrderAction(self, data, error):
         """撤单错误回报（交易所）"""
         event = Event(type_=EVENT_LOG)
-        log = u'撤单错误回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+        log = '撤单错误回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         event.dict_['log'] = log
         self.__eventEngine.put(event)
         
@@ -648,7 +648,7 @@ class DemoL2Api(L2MdApi):
     def onFrontConnected(self):
         """服务器连接"""
         event = Event(type_=EVENT_LOG)
-        event.dict_['log'] = u'L2行情服务器连接成功'
+        event.dict_['log'] = 'L2行情服务器连接成功'
         self.__eventEngine.put(event)
         
         # 如果用户已经填入了用户名等等，则自动尝试连接
@@ -664,7 +664,7 @@ class DemoL2Api(L2MdApi):
     def onFrontDisconnected(self, n):
         """服务器断开"""
         event = Event(type_=EVENT_LOG)
-        event.dict_['log'] = u'L2行情服务器连接断开'
+        event.dict_['log'] = 'L2行情服务器连接断开'
         self.__eventEngine.put(event)
         
     #---------------------------------------------------------------------- 
@@ -677,7 +677,7 @@ class DemoL2Api(L2MdApi):
     def onRspError(self, error, n, last):
         """错误回报"""
         event = Event(type_=EVENT_LOG)
-        log = u'L2行情错误回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+        log = 'L2行情错误回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         event.dict_['log'] = log
         self.__eventEngine.put(event)
     
@@ -687,9 +687,9 @@ class DemoL2Api(L2MdApi):
         event = Event(type_=EVENT_LOG)
         
         if error['ErrorID'] == 0:
-            log = u'L2行情服务器登陆成功'
+            log = 'L2行情服务器登陆成功'
         else:
-            log = u'登陆回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '登陆回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         
         event.dict_['log'] = log
         self.__eventEngine.put(event)
@@ -705,9 +705,9 @@ class DemoL2Api(L2MdApi):
         event = Event(type_=EVENT_LOG)
         
         if error['ErrorID'] == 0:
-            log = u'L2行情服务器登出成功'
+            log = 'L2行情服务器登出成功'
         else:
-            log = u'登出回报，错误代码：' + unicode(error['ErrorID']) + u',' + u'错误信息：' + error['ErrorMsg'].decode('gbk')
+            log = '登出回报，错误代码：' + str(error['ErrorID']) + ',' + '错误信息：' + error['ErrorMsg'].decode('gbk')
         
         event.dict_['log'] = log
         self.__eventEngine.put(event)

@@ -4,7 +4,7 @@
 本文件包含了CTA引擎中的策略开发用模板，开发策略时需要继承CtaTemplate类。
 '''
 
-from ctaBase import *
+from .ctaBase import *
 from vtConstant import *
 
 
@@ -174,7 +174,7 @@ class DataRecorder(CtaTemplate):
     本工具会记录Tick和1分钟K线数据。
     """
     className = 'DataRecorder'
-    author = u'用Python的交易员'
+    author = '用Python的交易员'
     
     # 策略的基本参数
     name = EMPTY_UNICODE            # 策略实例名称
@@ -198,18 +198,18 @@ class DataRecorder(CtaTemplate):
     #----------------------------------------------------------------------
     def onInit(self):
         """初始化"""
-        self.writeCtaLog(u'数据记录工具初始化')
+        self.writeCtaLog('数据记录工具初始化')
         
     #----------------------------------------------------------------------
     def onStart(self):
         """启动策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'数据记录工具启动')
+        self.writeCtaLog('数据记录工具启动')
         self.putEvent()
     
     #----------------------------------------------------------------------
     def onStop(self):
         """停止策略（必须由用户继承实现）"""
-        self.writeCtaLog(u'数据记录工具停止')
+        self.writeCtaLog('数据记录工具停止')
         self.putEvent()
         
     #----------------------------------------------------------------------

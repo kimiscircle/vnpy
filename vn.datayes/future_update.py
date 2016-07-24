@@ -1,4 +1,4 @@
-from storage import *
+from .storage import *
 dc = DBConfig()
 api = PyApi(Config())
 mc = MongodController(dc, api)

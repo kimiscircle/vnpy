@@ -1,69 +1,69 @@
-from api import *
+from .api import *
 
 def test_config():
 	cfig = Config()
-	print cfig.body, cfig.head, cfig.token
+	print(cfig.body, cfig.head, cfig.token)
 	cfig.view()
 
 def test_mktbar_D1():
 	api = PyApi(Config())
 	data = api.get_equity_D1()
-	print data.body
+	print(data.body)
 
 def test_mktbar_M1():
 	api = PyApi(Config())
 	data = api.get_equity_M1()
-	print data.body.tail()
+	print(data.body.tail())
 
 def test_bond_D1():
 	api = PyApi(Config())
 	data = api.get_bond_D1()
-	print data.body.tail()
+	print(data.body.tail())
 
 def test_fut_D1():
 	api = PyApi(Config())
 	data = api.get_future_D1()
-	print data.body
+	print(data.body)
 
 def test_fund_D1():
 	api = PyApi(Config())
 	data = api.get_fund_D1()
-	print data.body
+	print(data.body)
 
 def test_index_D1():
 	api = PyApi(Config())
 	data = api.get_index_D1()
-	print data.body
+	print(data.body)
 
 def test_option_D1():
 	api = PyApi(Config())
 	data = api.get_option_D1()
-	print data.body
+	print(data.body)
 
 def test_factors_D1():
 	api = PyApi(Config())
 	data = api.get_stockFactor_D1()
-	print data.body
+	print(data.body)
 
 def test_bs():
 	api = PyApi(Config())
 	data = api.get_balanceSheet()
-	print data.body
+	print(data.body)
 
 def test_cf():
 	api = PyApi(Config())
 	data = api.get_cashFlow()
-	print data.body
+	print(data.body)
 
 def test_is():
 	api = PyApi(Config())
 	data = api.get_incomeStatement()
-	print data.body
+	print(data.body)
 
 def test_output():
 	api = PyApi(Config())
 	data = api.get_equity_D1(ticker='000001',output='list')
-	print data
+	print(data)
 
 def test_mongod_get_drudgery():
 	c = MongoClient()

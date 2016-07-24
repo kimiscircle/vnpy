@@ -26,7 +26,7 @@ if __name__ == '__main__':
     setting['fastAlpha'] = 0.2
     setting['slowAlpha'] = 0.05
     setting['startDate'] = datetime(year=2015, month=5, day=20)
-    se.createStrategy(u'EMA演示策略', symbol, SimpleEmaStrategy, setting)
+    se.createStrategy('EMA演示策略', symbol, SimpleEmaStrategy, setting)
     
     # 启动所有策略
     se.startAll()

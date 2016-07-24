@@ -1,4 +1,4 @@
-from storage import *
+from .storage import *
 import pandas as pd
 import os
 dc = DBConfig()

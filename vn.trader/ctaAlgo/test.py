@@ -9,8 +9,8 @@ import sys
 reload(sys)
 
 sys.setdefaultencoding('utf-8')
-from ctaBacktesting import BacktestingEngine
-from ctaTurtle import *
+from .ctaBacktesting import BacktestingEngine
+from .ctaTurtle import *
 
 # 创建回测引擎
 engine = BacktestingEngine()

@@ -9,8 +9,8 @@ from datetime import datetime, timedelta
 from collections import OrderedDict
 import pymongo
 
-from ctaBase import *
-from ctaSetting import *
+from .ctaBase import *
+from .ctaSetting import *
 
 from vtConstant import *
 from vtGateway import VtOrderData, VtTradeData
@@ -98,9 +98,9 @@ class BacktestingEngine(object):
         host, port = loadMongoSetting()
         
         self.dbClient = pymongo.MongoClient(host, port)
-        collection = self.dbClient[dbName][symbol]          
+        collection = self.dbClient[dbName][symbol]
 
-        self.output(u'开始载入数据')
+        self.output('开始载入数据')
       
         # 首先根据回测模式，确认要使用的数据类
         if self.mode == self.BAR_MODE:
@@ -128,8 +128,8 @@ class BacktestingEngine(object):
             flt = {'datetime':{'$gte':self.strategyStartDate,
                                '$lte':self.dataEndDate}}  
         self.dbCursor = collection.find(flt)
-        
-        self.output(u'载入完成，数据量：%s' %(initCursor.count() + self.dbCursor.count()))
+
+        self.output('载入完成，数据量：%s' % (initCursor.count() + self.dbCursor.count()))
         
     #----------------------------------------------------------------------
     def runBacktesting(self):
@@ -142,24 +142,24 @@ class BacktestingEngine(object):
             dataClass = CtaTickData
             func = self.newTick
 
-        self.output(u'开始回测')
+        self.output('开始回测')
         
         self.strategy.inited = True
         self.strategy.onInit()
-        self.output(u'策略初始化完成')
+        self.output('策略初始化完成')
         
         self.strategy.trading = True
         self.strategy.onStart()
-        self.output(u'策略启动完成')
-        
-        self.output(u'开始回放数据')
+        self.output('策略启动完成')
+
+        self.output('开始回放数据')
 
         for d in self.dbCursor:
             data = dataClass()
             data.__dict__ = d
-            func(data)     
-            
-        self.output(u'数据回放结束')
+            func(data)
+
+        self.output('数据回放结束')
         
     #----------------------------------------------------------------------
     def newBar(self, bar):
@@ -291,7 +291,7 @@ class BacktestingEngine(object):
             bestCrossPrice = self.tick.lastPrice
         
         # 遍历限价单字典中的所有限价单
-        for orderID, order in self.workingLimitOrderDict.items():
+        for orderID, order in list(self.workingLimitOrderDict.items()):
             # 判断是否会成交
             buyCross = order.direction==DIRECTION_LONG and order.price>=buyCrossPrice
             sellCross = order.direction==DIRECTION_SHORT and order.price<=sellCrossPrice
@@ -329,8 +329,8 @@ class BacktestingEngine(object):
                 self.tradeDict[tradeID] = trade
                 
                 output=open('trade.log','a')
-                output.write(u'策略%s发送委托，%s,%s，%s，%s@%s' 
-                         %('Turtle',trade.dt, trade.vtSymbol, trade.direction, trade.volume, trade.price)+'\n')
+                output.write('策略%s发送委托，%s,%s，%s，%s@%s'
+                             % ('Turtle', trade.dt, trade.vtSymbol, trade.direction, trade.volume, trade.price) + '\n')
                 output.close
                 # 推送委托数据
                 order.tradedVolume = order.totalVolume
@@ -354,7 +354,7 @@ class BacktestingEngine(object):
             bestCrossPrice = self.tick.lastPrice
         
         # 遍历停止单字典中的所有停止单
-        for stopOrderID, so in self.workingStopOrderDict.items():
+        for stopOrderID, so in list(self.workingStopOrderDict.items()):
             # 判断是否会成交
             buyCross = so.direction==DIRECTION_LONG and so.price<=buyCrossPrice
             sellCross = so.direction==DIRECTION_SHORT and so.price>=sellCrossPrice
@@ -436,14 +436,14 @@ class BacktestingEngine(object):
     #----------------------------------------------------------------------
     def output(self, content):
         """输出内容"""
-        print content
+        print(content)
         
     #----------------------------------------------------------------------
     def showBacktestingResult(self):
         """
         显示回测结果
         """
-        self.output(u'显示回测结果')
+        self.output('显示回测结果')
         
         # 首先基于回测后的成交记录，计算每笔交易的盈亏
         pnlDict = OrderedDict()     # 平仓盈亏的记录 
@@ -455,7 +455,7 @@ class BacktestingEngine(object):
         # 计算滑点，一个来回包括两次
         totalSlippage = self.slippage * 2 
         output=open('result.log','w')
-        for trade in self.tradeDict.values():
+        for trade in list(self.tradeDict.values()):
             # 多头交易
             if trade.direction == DIRECTION_LONG:
                 # 如果尚无空头交易
@@ -470,15 +470,15 @@ class BacktestingEngine(object):
                         # 计算盈亏
                         pnl = ((trade.price - entryTrade.price)*(-1) - totalSlippage - commission) \
                             * entryTrade.volume * self.size
-                        if not pnlDict.has_key(trade.dt):
+                        if trade.dt not in pnlDict:
                             pnlDict[trade.dt] = pnl
                         else:
                             pnlDict[trade.dt] = pnlDict[trade.dt]+pnl
                         
                         TotolTradeDict[entryTrade.tradeID]=pnl
-                        
-                        output.write(u'空,%s, %s, %s, %s' 
-                        %(entryTrade.dt,entryTrade.price,trade.dt,trade.price)+'\n')
+
+                        output.write('空,%s, %s, %s, %s'
+                                     % (entryTrade.dt, entryTrade.price, trade.dt, trade.price) + '\n')
                         
             # 空头交易        
             else:
@@ -494,19 +494,19 @@ class BacktestingEngine(object):
                         # 计算盈亏
                         pnl =((trade.price - entryTrade.price) - totalSlippage - commission) \
                             * entryTrade.volume * self.size
-                        if not pnlDict.has_key(trade.dt):
+                        if trade.dt not in pnlDict:
                             pnlDict[trade.dt] = pnl
                         else:
                             pnlDict[trade.dt] = pnlDict[trade.dt]+pnl
                         
                         TotolTradeDict[entryTrade.tradeID]=pnl
-                        output.write(u'多,%s, %s, %s, %s' 
-                        %(entryTrade.dt,entryTrade.price,trade.dt,trade.price)+'\n')
+                        output.write('多,%s, %s, %s, %s'
+                                     % (entryTrade.dt, entryTrade.price, trade.dt, trade.price) + '\n')
                         
         output.close()
         # 然后基于每笔交易的结果，我们可以计算具体的盈亏曲线和最大回撤等
-        timeList = pnlDict.keys()
-        pnlList = pnlDict.values()
+        timeList = list(pnlDict.keys())
+        pnlList = list(pnlDict.values())
         
         capital = 0
         maxCapital = 0
@@ -527,11 +527,11 @@ class BacktestingEngine(object):
             
         # 输出
         self.output('-' * 50)
-        self.output(u'第一笔交易时间：%s' % timeList[0])
-        self.output(u'最后一笔交易时间：%s' % timeList[-1])
-        self.output(u'总交易次数：%s' % len(TotolTradeDict))
-        self.output(u'总盈亏：%s' % capitalList[-1])
-        self.output(u'最大回撤: %s' % min(drawdownList))        
+        self.output('第一笔交易时间：%s' % timeList[0])
+        self.output('最后一笔交易时间：%s' % timeList[-1])
+        self.output('总交易次数：%s' % len(TotolTradeDict))
+        self.output('总盈亏：%s' % capitalList[-1])
+        self.output('最大回撤: %s' % min(drawdownList))        
             
         # 绘图
         import matplotlib.pyplot as plt
@@ -542,7 +542,7 @@ class BacktestingEngine(object):
         
         pDD = plt.subplot(3, 1, 2)
         pDD.set_ylabel("DD")
-        pDD.bar(range(len(drawdownList)), drawdownList)         
+        pDD.bar(list(range(len(drawdownList))), drawdownList)         
         
         pPnl = plt.subplot(3, 1, 3)
         pPnl.set_ylabel("pnl")
@@ -576,7 +576,7 @@ if __name__ == '__main__':
     # 以下内容是一段回测脚本的演示，用户可以根据自己的需求修改
     # 建议使用ipython notebook或者spyder来做回测
     # 同样可以在命令模式下进行回测（一行一行输入运行）
-    from ctaTurtle import *
+    from .ctaTurtle import *
     
     # 创建回测引擎
     engine = BacktestingEngine()

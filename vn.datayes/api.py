@@ -7,13 +7,13 @@ import pymongo
 import pandas as pd
 
 from datetime import datetime, timedelta
-from Queue import Queue, Empty
+from queue import Queue, Empty
 from threading import Thread, Timer
 from pymongo import MongoClient
 
 from requests.exceptions import ConnectionError
-from errors import (VNPAST_ConfigError, VNPAST_RequestError,
-VNPAST_DataConstructorError)
+from .errors import (VNPAST_ConfigError, VNPAST_RequestError,
+					 VNPAST_DataConstructorError)
 
 class Config(object):
 	"""
@@ -75,9 +75,9 @@ class Config(object):
 			'config_body' : self.body,
 			'user_token' : self.token
 		}
-		print json.dumps(config_view, 
-						 indent=4, 
-						 sort_keys=True)
+		print(json.dumps(config_view,
+						 indent=4,
+						 sort_keys=True))
 
 #----------------------------------------------------------------------
 # Data containers.
@@ -148,7 +148,7 @@ class History(BaseDataContainer):
 			msg = '[{}]: Unable to construct history data; '.format(
 					self.head) + 'input is not a dataframe.'
 			raise VNPAST_DataConstructorError(msg)
-		except Exception,e:
+		except Exception as e:
 			msg = '[{}]: Unable to construct history data; '.format(
 					self.head) + str(e)
 			raise VNPAST_DataConstructorError(msg)
@@ -191,7 +191,7 @@ class Bar(History):
 										'date': 20150702, ...
 			  						}, ... ],
 			  				'ticker': '000001', 
-			  				'shortNM': u'\u4e0a\u8bc1\u6307\u6570'
+			  				'shortNM': u'\\u4e0a\\u8bc1\\u6307\\u6570'
 			  				}, ...(other tickers) ],
 							'retCode': 1, 
 							'retMsg': 'Success'}.
@@ -211,7 +211,7 @@ class Bar(History):
 			msg = '[{}]: Unable to construct history data; '.format(
 					self.head) + 'input is not a dataframe.'
 			raise VNPAST_DataConstructorError(msg)
-		except Exception,e:
+		except Exception as e:
 			msg = '[{}]: Unable to construct history data; '.format(
 					self.head) + str(e)
 			raise VNPAST_DataConstructorError(msg)
@@ -275,7 +275,7 @@ class PyApi(object):
 				msg = '[API]: Unable to configure api; ' + \
 					  'config file is incomplete.'
 				raise VNPAST_ConfigError(msg)
-			except Exception,e:
+			except Exception as e:
 				msg = '[API]: Unable to configure api; ' + str(e)
 				raise VNPAST_ConfigError(msg)
 
@@ -299,7 +299,7 @@ class PyApi(object):
 		try:
 			assert type(url) == str
 			assert type(params) == dict
-		except AssertionError,e:
+		except AssertionError as e:
 			raise e('[API]: Unvalid url or parameter input.')
 		if not self._session:
 			s = requests.session()
@@ -323,7 +323,7 @@ class PyApi(object):
 				  str(resp.status_code)
 			raise VNPAST_RequestError(msg)
 			pass
-		except Exception,e:
+		except Exception as e:
 			msg = '[API]: Bad request.' + str(e)
 			raise VNPAST_RequestError(msg)
 
@@ -356,7 +356,7 @@ class PyApi(object):
 		try:
 			resp = self.__access(url=url, params=params)
 			assert len(resp.json()) > 0
-			print resp.json()
+			print(resp.json())
 			data = Bar(resp.json())
 			return data
 		except AssertionError: return 0
@@ -1037,22 +1037,22 @@ class PyApi(object):
 							  ticker = ticker,
 							  output = 'list')
 				assert len(data) >= 1
-				map(update_dt, data) # add datetime feature to docs.
+				list(map(update_dt, data))  # add datetime feature to docs.
 				coll = db[ticker]
 				coll.insert_many(data)
-				print '[API|Session{}]: '.format(id) + \
-					  'Finished {} in {}.'.format(k, n)
+				print('[API|Session{}]: '.format(id) + \
+					  'Finished {} in {}.'.format(k, n))
 				k += 1
 			except AssertionError:
 				msg = '[API|Session{}]: '.format(id) + \
 					  'Empty dataset in the response.'
-				print msg
+				print(msg)
 				pass
-			except Exception, e:
+			except Exception as e:
 				msg = '[API|Session{}]: '.format(id) + \
 					  'Exception encountered when ' + \
 					  'requesting data; ' + str(e)
-				print msg
+				print(msg)
 				pass
 
 	def get_equity_D1_drudgery(self, id, db, start, end, tasks=[]):
@@ -1327,11 +1327,11 @@ class PyApi(object):
 										  ticker = ticker,
 										  output = 'list')
 				assert len(data) >= 1
-				map(update_dt, data) # add datetime feature to docs.
+				list(map(update_dt, data))  # add datetime feature to docs.
 				coll = db[ticker]
 				coll.insert_many(data)
-				print '[API|Session{}]: '.format(id) + \
-					  'Finished {} in {}.'.format(k, n)
+				print('[API|Session{}]: '.format(id) + \
+					  'Finished {} in {}.'.format(k, n))
 				k += 1
 			except ConnectionError:
 			# If choke connection, standby for 1sec an invoke again.
@@ -1341,13 +1341,13 @@ class PyApi(object):
 			except AssertionError:
 				msg = '[API|Session{}]: '.format(id) + \
 					  'Empty dataset in the response.'
-				print msg
+				print(msg)
 				pass
-			except Exception, e:
+			except Exception as e:
 				msg = '[API|Session{}]: '.format(id) + \
 					  'Exception encountered when ' + \
 					  'requesting data; ' + str(e)
-				print msg
+				print(msg)
 				pass
 
 	def get_equity_D1_mongod_(self, db, start, end, sessionNum=30):
@@ -1435,11 +1435,11 @@ class PyApi(object):
 										  end = end, 
 										  secID = secID,
 										  output = 'list')
-				map(update_dt, data) # add datetime feature to docs.
+				list(map(update_dt, data))  # add datetime feature to docs.
 				coll = db[secID]
 				coll.insert_many(data)
-				print '[API|Session{}]: '.format(id) + \
-					  'Finished {} in {}.'.format(k, n)
+				print('[API|Session{}]: '.format(id) + \
+					  'Finished {} in {}.'.format(k, n))
 				k += 1
 			except ConnectionError:
 			# If choke connection, standby for 1sec an invoke again.
@@ -1449,13 +1449,13 @@ class PyApi(object):
 			except AssertionError:
 				msg = '[API|Session{}]: '.format(id) + \
 					  'Empty dataset in the response.'
-				print msg
+				print(msg)
 				pass
-			except Exception, e:
+			except Exception as e:
 				msg = '[API|Session{}]: '.format(id) + \
 					  'Exception encountered when ' + \
 					  'requesting data; ' + str(e)
-				print msg
+				print(msg)
 				pass
 
 	def get_equity_M1_interMonth(self, db, id,

@@ -24,20 +24,20 @@ import os
 import json
 import datetime
 
-from vnoanda import OandaApi
+from .vnoanda import OandaApi
 from vtGateway import *
 
 # 价格类型映射
 priceTypeMap = {}
 priceTypeMap[PRICETYPE_LIMITPRICE] = 'limit'
 priceTypeMap[PRICETYPE_MARKETPRICE] = 'market'
-priceTypeMapReverse = {v: k for k, v in priceTypeMap.items()} 
+priceTypeMapReverse = {v: k for k, v in list(priceTypeMap.items())} 
 
 # 方向类型映射
 directionMap = {}
 directionMap[DIRECTION_LONG] = 'buy'
 directionMap[DIRECTION_SHORT] = 'sell'
-directionMapReverse = {v: k for k, v in directionMap.items()}
+directionMapReverse = {v: k for k, v in list(directionMap.items())}
 
 
 ########################################################################
@@ -65,7 +65,7 @@ class OandaGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -78,7 +78,7 @@ class OandaGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -86,7 +86,7 @@ class OandaGateway(VtGateway):
         self.api.init(settingName, token, accountId)
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = u'接口初始化成功'
+        log.logContent = '接口初始化成功'
         self.onLog(log)
 
         # 查询信息
@@ -210,8 +210,8 @@ class Api(OandaApi):
             contract.size = 1
             contract.productClass = PRODUCT_FOREX
             self.gateway.onContract(contract)
-        
-        self.writeLog(u'交易合约信息查询完成')
+
+        self.writeLog('交易合约信息查询完成')
 
     #----------------------------------------------------------------------
     def onGetAccountInfo(self, data, reqID):
@@ -259,8 +259,8 @@ class Api(OandaApi):
             self.gateway.onOrder(order)
             
             self.orderDict[order.orderID] = order
-            
-        self.writeLog(u'委托信息查询完成')
+
+        self.writeLog('委托信息查询完成')
     
     #----------------------------------------------------------------------
     def onGetPositions(self, data, reqID):
@@ -310,8 +310,8 @@ class Api(OandaApi):
                 trade.tradeTime = getTime(d['time'])
                 
                 self.gateway.onTrade(trade)
-                
-        self.writeLog(u'成交信息查询完成')
+
+        self.writeLog('成交信息查询完成')
         
     #----------------------------------------------------------------------
     def onPrice(self, data):

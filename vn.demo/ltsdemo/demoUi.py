@@ -8,7 +8,7 @@ Monitor主要负责监控数据，有部分包含主动功能。
 Widget主要用于调用主动功能，有部分包含数据监控。
 """
 
-from __future__ import division
+
 
 import time
 import sys
@@ -39,10 +39,10 @@ class LogMonitor(QtGui.QTableWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'日志')
+        self.setWindowTitle('日志')
 
-        self.setColumnCount(2)                     
-        self.setHorizontalHeaderLabels([u'时间', u'日志'])
+        self.setColumnCount(2)
+        self.setHorizontalHeaderLabels(['时间', '日志'])
 
         self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
         self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态
@@ -85,21 +85,21 @@ class AccountMonitor(QtGui.QTableWidget):
     signal = QtCore.pyqtSignal(type(Event()))
 
     dictLabels = OrderedDict()
-    dictLabels['AccountID'] = u'投资者账户'
-    dictLabels['PreBalance'] = u'昨结'
-    dictLabels['Withdraw'] = u'出金'
-    dictLabels['Deposit'] = u'入金'    
-    dictLabels['FrozenCash'] = u'冻结资金'
-    dictLabels['FrozenMargin'] = u'冻结保证金'
-    dictLabels['FrozenCommission'] = u'冻结手续费'
-    dictLabels['FrozenTransferFee'] = u'冻结过户费'
-    dictLabels['FrozenStampTax'] = u'冻结印花税'
-    dictLabels['Commission'] = u'手续费'
-    dictLabels['TransferFee'] = u'过户费'
-    dictLabels['StampTax'] = u'印花税'    
-    dictLabels['CurrMargin'] = u'当前保证金'
-    dictLabels['Available'] = u'可用资金'
-    dictLabels['WithdrawQuota'] = u'可取资金'
+    dictLabels['AccountID'] = '投资者账户'
+    dictLabels['PreBalance'] = '昨结'
+    dictLabels['Withdraw'] = '出金'
+    dictLabels['Deposit'] = '入金'
+    dictLabels['FrozenCash'] = '冻结资金'
+    dictLabels['FrozenMargin'] = '冻结保证金'
+    dictLabels['FrozenCommission'] = '冻结手续费'
+    dictLabels['FrozenTransferFee'] = '冻结过户费'
+    dictLabels['FrozenStampTax'] = '冻结印花税'
+    dictLabels['Commission'] = '手续费'
+    dictLabels['TransferFee'] = '过户费'
+    dictLabels['StampTax'] = '印花税'
+    dictLabels['CurrMargin'] = '当前保证金'
+    dictLabels['Available'] = '可用资金'
+    dictLabels['WithdrawQuota'] = '可取资金'
 
     #----------------------------------------------------------------------
     def __init__(self, eventEngine, parent=None):
@@ -115,10 +115,10 @@ class AccountMonitor(QtGui.QTableWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """"""
-        self.setWindowTitle(u'账户')
+        self.setWindowTitle('账户')
 
         self.setColumnCount(len(self.dictLabels))
-        self.setHorizontalHeaderLabels(self.dictLabels.values())
+        self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
         self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
         self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态	
@@ -139,7 +139,7 @@ class AccountMonitor(QtGui.QTableWidget):
         if accountid in self.dictAccount:
             d = self.dictAccount[accountid]
 
-            for label, cell in d.items():
+            for label, cell in list(d.items()):
                 cell.setText(str(data[label]))
         # 否则插入新的一行，并更新
         else:
@@ -160,56 +160,56 @@ class TradeMonitor(QtGui.QTableWidget):
     signal = QtCore.pyqtSignal(type(Event()))
 
     dictLabels = OrderedDict()
-    dictLabels['InstrumentID'] = u'合约代码'
-    dictLabels['ExchangeInstID'] = u'交易所合约代码'
-    dictLabels['ExchangeID'] = u'交易所'
-    dictLabels['Direction'] = u'方向'   
-    dictLabels['OffsetFlag'] = u'开平'
-    dictLabels['TradeID'] = u'成交编号'
-    dictLabels['TradeTime'] = u'成交时间'
-    dictLabels['Volume'] = u'数量'
-    dictLabels['Price'] = u'价格'
-    dictLabels['OrderRef'] = u'报单号'
-    dictLabels['OrderSysID'] = u'报单系统号'
+    dictLabels['InstrumentID'] = '合约代码'
+    dictLabels['ExchangeInstID'] = '交易所合约代码'
+    dictLabels['ExchangeID'] = '交易所'
+    dictLabels['Direction'] = '方向'
+    dictLabels['OffsetFlag'] = '开平'
+    dictLabels['TradeID'] = '成交编号'
+    dictLabels['TradeTime'] = '成交时间'
+    dictLabels['Volume'] = '数量'
+    dictLabels['Price'] = '价格'
+    dictLabels['OrderRef'] = '报单号'
+    dictLabels['OrderSysID'] = '报单系统号'
 
     dictDirection = {}
-    dictDirection['0'] = u'买'
-    dictDirection['1'] = u'卖'
-    dictDirection['2'] = u'ETF申购'
-    dictDirection['3'] = u'ETF赎回'
-    dictDirection['4'] = u'ETF现金替代'
-    dictDirection['5'] = u'债券入库'
-    dictDirection['6'] = u'债券出库'
-    dictDirection['7'] = u'配股'
-    dictDirection['8'] = u'转托管'
-    dictDirection['9'] = u'信用账户配股'
-    dictDirection['A'] = u'担保品买入'
-    dictDirection['B'] = u'担保品卖出'
-    dictDirection['C'] = u'担保品转入'
-    dictDirection['D'] = u'担保品转出'
-    dictDirection['E'] = u'融资买入'
-    dictDirection['F'] = u'融资卖出'
-    dictDirection['G'] = u'卖券还款'
-    dictDirection['H'] = u'买券还券'
-    dictDirection['I'] = u'直接还款'
-    dictDirection['J'] = u'直接换券'
-    dictDirection['K'] = u'余券划转'
-    dictDirection['L'] = u'OF申购'    
-    dictDirection['M'] = u'OF赎回'
-    dictDirection['N'] = u'SF拆分'
-    dictDirection['O'] = u'SF合并'
-    dictDirection['P'] = u'备兑'
-    dictDirection['Q'] = u'证券冻结/解冻'
-    dictDirection['R'] = u'行权'      
+    dictDirection['0'] = '买'
+    dictDirection['1'] = '卖'
+    dictDirection['2'] = 'ETF申购'
+    dictDirection['3'] = 'ETF赎回'
+    dictDirection['4'] = 'ETF现金替代'
+    dictDirection['5'] = '债券入库'
+    dictDirection['6'] = '债券出库'
+    dictDirection['7'] = '配股'
+    dictDirection['8'] = '转托管'
+    dictDirection['9'] = '信用账户配股'
+    dictDirection['A'] = '担保品买入'
+    dictDirection['B'] = '担保品卖出'
+    dictDirection['C'] = '担保品转入'
+    dictDirection['D'] = '担保品转出'
+    dictDirection['E'] = '融资买入'
+    dictDirection['F'] = '融资卖出'
+    dictDirection['G'] = '卖券还款'
+    dictDirection['H'] = '买券还券'
+    dictDirection['I'] = '直接还款'
+    dictDirection['J'] = '直接换券'
+    dictDirection['K'] = '余券划转'
+    dictDirection['L'] = 'OF申购'
+    dictDirection['M'] = 'OF赎回'
+    dictDirection['N'] = 'SF拆分'
+    dictDirection['O'] = 'SF合并'
+    dictDirection['P'] = '备兑'
+    dictDirection['Q'] = '证券冻结/解冻'
+    dictDirection['R'] = '行权'      
 
     dictOffset = {}
-    dictOffset['0'] = u'开仓'
-    dictOffset['1'] = u'平仓'
-    dictOffset['2'] = u'强平'
-    dictOffset['3'] = u'平今'
-    dictOffset['4'] = u'平昨'
-    dictOffset['5'] = u'强减'
-    dictOffset['6'] = u'本地强平'
+    dictOffset['0'] = '开仓'
+    dictOffset['1'] = '平仓'
+    dictOffset['2'] = '强平'
+    dictOffset['3'] = '平今'
+    dictOffset['4'] = '平昨'
+    dictOffset['5'] = '强减'
+    dictOffset['6'] = '本地强平'
 
     #----------------------------------------------------------------------
     def __init__(self, eventEngine, parent=None):
@@ -223,10 +223,10 @@ class TradeMonitor(QtGui.QTableWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """"""
-        self.setWindowTitle(u'成交')
+        self.setWindowTitle('成交')
 
         self.setColumnCount(len(self.dictLabels))
-        self.setHorizontalHeaderLabels(self.dictLabels.values())
+        self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
         self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
         self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态	
@@ -249,12 +249,12 @@ class TradeMonitor(QtGui.QTableWidget):
                 try:
                     value = self.dictDirection[data[label]]
                 except KeyError:
-                    value = u'未知类型'
+                    value = '未知类型'
             elif label == 'OffsetFlag':
                 try:
                     value = self.dictOffset[data[label]]
                 except KeyError:
-                    value = u'未知类型'
+                    value = '未知类型'
             else:
                 value = str(data[label])
 
@@ -268,19 +268,19 @@ class PositionMonitor(QtGui.QTableWidget):
     signal = QtCore.pyqtSignal(type(Event()))
 
     dictLabels = OrderedDict()
-    dictLabels['InstrumentID'] = u'合约代码'
-    dictLabels['PosiDirection'] = u'方向'  
-    dictLabels['Position'] = u'持仓'
-    dictLabels['LongFrozen'] = u'多头冻结'
-    dictLabels['ShortFrozen'] = u'空头冻结'
-    dictLabels['PositionCost'] = u'持仓成本'
-    dictLabels['OpenCost'] = u'开仓成本'
-    dictLabels['StockValue'] = u'证券价值'
+    dictLabels['InstrumentID'] = '合约代码'
+    dictLabels['PosiDirection'] = '方向'
+    dictLabels['Position'] = '持仓'
+    dictLabels['LongFrozen'] = '多头冻结'
+    dictLabels['ShortFrozen'] = '空头冻结'
+    dictLabels['PositionCost'] = '持仓成本'
+    dictLabels['OpenCost'] = '开仓成本'
+    dictLabels['StockValue'] = '证券价值'
 
     dictPosiDirection = {}
-    dictPosiDirection['1'] = u'净'
-    dictPosiDirection['2'] = u'多'
-    dictPosiDirection['3'] = u'空'
+    dictPosiDirection['1'] = '净'
+    dictPosiDirection['2'] = '多'
+    dictPosiDirection['3'] = '空'
 
     #----------------------------------------------------------------------
     def __init__(self, eventEngine, parent=None):
@@ -296,10 +296,10 @@ class PositionMonitor(QtGui.QTableWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """"""
-        self.setWindowTitle(u'持仓')
+        self.setWindowTitle('持仓')
 
         self.setColumnCount(len(self.dictLabels))
-        self.setHorizontalHeaderLabels(self.dictLabels.values())
+        self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
         self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
         self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态	
@@ -323,12 +323,12 @@ class PositionMonitor(QtGui.QTableWidget):
             if posid in self.dictPosition:
                 d = self.dictPosition[posid]
 
-                for label, cell in d.items():
+                for label, cell in list(d.items()):
                     if label == 'PosiDirection':
                         try:
                             value = self.dictPosiDirection[data[label]]
                         except KeyError:
-                            value = u'未知类型'
+                            value = '未知类型'
                     else:
                         value = str(data[label])	
                     cell.setText(value)
@@ -342,7 +342,7 @@ class PositionMonitor(QtGui.QTableWidget):
                         try:
                             value = self.dictPosiDirection[data[label]]
                         except KeyError:
-                            value = u'未知类型'
+                            value = '未知类型'
                     else:
                         value = str(data[label])
                     cell = QtGui.QTableWidgetItem(value)
@@ -358,57 +358,57 @@ class OrderMonitor(QtGui.QTableWidget):
     signal = QtCore.pyqtSignal(type(Event()))
 
     dictLabels = OrderedDict()
-    dictLabels['OrderRef'] = u'报单号'
-    dictLabels['OrderSysID'] = u'系统编号'
-    dictLabels['InstrumentID'] = u'合约代码'
-    dictLabels['ExchangeInstID'] = u'交易所合约代码'   
-    dictLabels['Direction'] = u'方向'
-    dictLabels['CombOffsetFlag'] = u'开平'
-    dictLabels['LimitPrice'] = u'价格'
-    dictLabels['VolumeTotalOriginal'] = u'委托数量'
-    dictLabels['VolumeTraded'] = u'成交数量'
-    dictLabels['InsertTime'] = u'委托时间'
-    dictLabels['CancelTime'] = u'撤销时间'
-    dictLabels['StatusMsg'] = u'状态信息'
+    dictLabels['OrderRef'] = '报单号'
+    dictLabels['OrderSysID'] = '系统编号'
+    dictLabels['InstrumentID'] = '合约代码'
+    dictLabels['ExchangeInstID'] = '交易所合约代码'
+    dictLabels['Direction'] = '方向'
+    dictLabels['CombOffsetFlag'] = '开平'
+    dictLabels['LimitPrice'] = '价格'
+    dictLabels['VolumeTotalOriginal'] = '委托数量'
+    dictLabels['VolumeTraded'] = '成交数量'
+    dictLabels['InsertTime'] = '委托时间'
+    dictLabels['CancelTime'] = '撤销时间'
+    dictLabels['StatusMsg'] = '状态信息'
 
     dictDirection = {}
-    dictDirection['0'] = u'买'
-    dictDirection['1'] = u'卖'
-    dictDirection['2'] = u'ETF申购'
-    dictDirection['3'] = u'ETF赎回'
-    dictDirection['4'] = u'ETF现金替代'
-    dictDirection['5'] = u'债券入库'
-    dictDirection['6'] = u'债券出库'
-    dictDirection['7'] = u'配股'
-    dictDirection['8'] = u'转托管'
-    dictDirection['9'] = u'信用账户配股'
-    dictDirection['A'] = u'担保品买入'
-    dictDirection['B'] = u'担保品卖出'
-    dictDirection['C'] = u'担保品转入'
-    dictDirection['D'] = u'担保品转出'
-    dictDirection['E'] = u'融资买入'
-    dictDirection['F'] = u'融资卖出'
-    dictDirection['G'] = u'卖券还款'
-    dictDirection['H'] = u'买券还券'
-    dictDirection['I'] = u'直接还款'
-    dictDirection['J'] = u'直接换券'
-    dictDirection['K'] = u'余券划转'
-    dictDirection['L'] = u'OF申购'    
-    dictDirection['M'] = u'OF赎回'
-    dictDirection['N'] = u'SF拆分'
-    dictDirection['O'] = u'SF合并'
-    dictDirection['P'] = u'备兑'
-    dictDirection['Q'] = u'证券冻结/解冻'
-    dictDirection['R'] = u'行权'          
+    dictDirection['0'] = '买'
+    dictDirection['1'] = '卖'
+    dictDirection['2'] = 'ETF申购'
+    dictDirection['3'] = 'ETF赎回'
+    dictDirection['4'] = 'ETF现金替代'
+    dictDirection['5'] = '债券入库'
+    dictDirection['6'] = '债券出库'
+    dictDirection['7'] = '配股'
+    dictDirection['8'] = '转托管'
+    dictDirection['9'] = '信用账户配股'
+    dictDirection['A'] = '担保品买入'
+    dictDirection['B'] = '担保品卖出'
+    dictDirection['C'] = '担保品转入'
+    dictDirection['D'] = '担保品转出'
+    dictDirection['E'] = '融资买入'
+    dictDirection['F'] = '融资卖出'
+    dictDirection['G'] = '卖券还款'
+    dictDirection['H'] = '买券还券'
+    dictDirection['I'] = '直接还款'
+    dictDirection['J'] = '直接换券'
+    dictDirection['K'] = '余券划转'
+    dictDirection['L'] = 'OF申购'
+    dictDirection['M'] = 'OF赎回'
+    dictDirection['N'] = 'SF拆分'
+    dictDirection['O'] = 'SF合并'
+    dictDirection['P'] = '备兑'
+    dictDirection['Q'] = '证券冻结/解冻'
+    dictDirection['R'] = '行权'          
 
     dictOffset = {}
-    dictOffset['0'] = u'开仓'
-    dictOffset['1'] = u'平仓'
-    dictOffset['2'] = u'强平'
-    dictOffset['3'] = u'平今'
-    dictOffset['4'] = u'平昨'
-    dictOffset['5'] = u'强减'
-    dictOffset['6'] = u'本地强平'    
+    dictOffset['0'] = '开仓'
+    dictOffset['1'] = '平仓'
+    dictOffset['2'] = '强平'
+    dictOffset['3'] = '平今'
+    dictOffset['4'] = '平昨'
+    dictOffset['5'] = '强减'
+    dictOffset['6'] = '本地强平'    
 
     #----------------------------------------------------------------------
     def __init__(self, eventEngine, mainEngine, parent=None):
@@ -426,10 +426,10 @@ class OrderMonitor(QtGui.QTableWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """"""
-        self.setWindowTitle(u'报单')
+        self.setWindowTitle('报单')
 
         self.setColumnCount(len(self.dictLabels))
-        self.setHorizontalHeaderLabels(self.dictLabels.values())
+        self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
         self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
         self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态
@@ -454,17 +454,17 @@ class OrderMonitor(QtGui.QTableWidget):
         if orderref in self.dictOrder:
             d = self.dictOrder[orderref]
 
-            for label, cell in d.items():
+            for label, cell in list(d.items()):
                 if label == 'Direction':
                     try:
                         value = self.dictDirection[data[label]]
                     except KeyError:
-                        value = u'未知类型'
+                        value = '未知类型'
                 elif label == 'CombOffsetFlag':
                     try:
                         value = self.dictOffset[data[label]]
                     except KeyError:
-                        value = u'未知类型'
+                        value = '未知类型'
                 elif label == 'StatusMsg':
                     value = data[label].decode('gbk')
                 else:
@@ -481,12 +481,12 @@ class OrderMonitor(QtGui.QTableWidget):
                     try:
                         value = self.dictDirection[data[label]]
                     except KeyError:
-                        value = u'未知类型'
+                        value = '未知类型'
                 elif label == 'CombOffsetFlag':
                     try:
                         value = self.dictOffset[data[label]]
                     except KeyError:
-                        value = u'未知类型'
+                        value = '未知类型'
                 elif label == 'StatusMsg':
                     value = data[label].decode('gbk')		
                 else:
@@ -503,7 +503,7 @@ class OrderMonitor(QtGui.QTableWidget):
     #----------------------------------------------------------------------
     def cancelOrder(self, cell):
         """双击撤单"""
-        print u'撤单指令'
+        print('撤单指令')
         orderref = cell.orderref
         order = self.dictOrderData[orderref]
 
@@ -515,13 +515,13 @@ class OrderMonitor(QtGui.QTableWidget):
                                           order['FrontID'],
                                           order['SessionID'])
 
-            print u'发出撤单'
+            print('发出撤单')
 
     #----------------------------------------------------------------------
     def cancelAll(self):
         """全撤"""
-        print u'全撤'
-        for order in self.dictOrderData.values():
+        print('全撤')
+        for order in list(self.dictOrderData.values()):
             if not (order['OrderStatus'] == '0' or order['OrderStatus'] == '5'):
                 self.__mainEngine.cancelOrder(order['InstrumentID'],
                                               order['ExchangeID'],
@@ -536,19 +536,19 @@ class MarketDataMonitor(QtGui.QTableWidget):
     signal = QtCore.pyqtSignal(type(Event()))
 
     dictLabels = OrderedDict()
-    dictLabels['Name'] = u'合约名称'
-    dictLabels['InstrumentID'] = u'合约代码'
-    dictLabels['ExchangeInstID'] = u'合约交易所代码'
+    dictLabels['Name'] = '合约名称'
+    dictLabels['InstrumentID'] = '合约代码'
+    dictLabels['ExchangeInstID'] = '合约交易所代码'
 
-    dictLabels['BidPrice1'] = u'买一价'
-    dictLabels['BidVolume1'] = u'买一量'
-    dictLabels['AskPrice1'] = u'卖一价'
-    dictLabels['AskVolume1'] = u'卖一量'    
+    dictLabels['BidPrice1'] = '买一价'
+    dictLabels['BidVolume1'] = '买一量'
+    dictLabels['AskPrice1'] = '卖一价'
+    dictLabels['AskVolume1'] = '卖一量'
 
-    dictLabels['LastPrice'] = u'最新价'
-    dictLabels['Volume'] = u'成交量'
+    dictLabels['LastPrice'] = '最新价'
+    dictLabels['Volume'] = '成交量'
 
-    dictLabels['UpdateTime'] = u'更新时间'
+    dictLabels['UpdateTime'] = '更新时间'
 
 
     #----------------------------------------------------------------------
@@ -566,10 +566,10 @@ class MarketDataMonitor(QtGui.QTableWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """"""
-        self.setWindowTitle(u'行情')
+        self.setWindowTitle('行情')
 
         self.setColumnCount(len(self.dictLabels))
-        self.setHorizontalHeaderLabels(self.dictLabels.values())
+        self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
         self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
         self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态
@@ -590,7 +590,7 @@ class MarketDataMonitor(QtGui.QTableWidget):
         if instrumentid in self.dictData:
             d = self.dictData[instrumentid]
 
-            for label, cell in d.items():
+            for label, cell in list(d.items()):
                 if label != 'Name':
                     value = str(data[label])	
                 else:
@@ -642,14 +642,14 @@ class LoginWidget(QtGui.QDialog):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'登录')
+        self.setWindowTitle('登录')
 
         # 设置组件
-        labelUserID = QtGui.QLabel(u'账号：')
-        labelMdPassword = QtGui.QLabel(u'行情密码：')
-        labelTdPassword = QtGui.QLabel(u'交易密码：')
-        labelMdAddress = QtGui.QLabel(u'行情服务器：')
-        labelTdAddress = QtGui.QLabel(u'交易服务器：')
+        labelUserID = QtGui.QLabel('账号：')
+        labelMdPassword = QtGui.QLabel('行情密码：')
+        labelTdPassword = QtGui.QLabel('交易密码：')
+        labelMdAddress = QtGui.QLabel('行情服务器：')
+        labelTdAddress = QtGui.QLabel('交易服务器：')
 
         self.editUserID = QtGui.QLineEdit()
         self.editMdPassword = QtGui.QLineEdit()
@@ -659,8 +659,8 @@ class LoginWidget(QtGui.QDialog):
 
         self.editUserID.setMinimumWidth(200)
 
-        buttonLogin = QtGui.QPushButton(u'登录')
-        buttonCancel = QtGui.QPushButton(u'取消')
+        buttonLogin = QtGui.QPushButton('登录')
+        buttonCancel = QtGui.QPushButton('取消')
         buttonLogin.clicked.connect(self.login)
         buttonCancel.clicked.connect(self.close)
 
@@ -758,11 +758,11 @@ class ControlWidget(QtGui.QWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """"""
-        self.setWindowTitle(u'测试')
+        self.setWindowTitle('测试')
 
-        buttonAccount = QtGui.QPushButton(u'查询账户')
-        buttonInvestor = QtGui.QPushButton(u'查询投资者')
-        buttonPosition = QtGui.QPushButton(u'查询持仓')
+        buttonAccount = QtGui.QPushButton('查询账户')
+        buttonInvestor = QtGui.QPushButton('查询投资者')
+        buttonPosition = QtGui.QPushButton('查询持仓')
 
         buttonAccount.clicked.connect(self.__mainEngine.getAccount)
         buttonInvestor.clicked.connect(self.__mainEngine.getInvestor)
@@ -782,35 +782,35 @@ class TradingWidget(QtGui.QWidget):
     signal = QtCore.pyqtSignal(type(Event()))
 
     dictDirection = OrderedDict()
-    dictDirection['0'] = u'买'
-    dictDirection['1'] = u'卖'
-    dictDirection['2'] = u'ETF申购'
-    dictDirection['3'] = u'ETF赎回'
-    dictDirection['L'] = u'OF申购'    
-    dictDirection['M'] = u'OF赎回'
-    dictDirection['N'] = u'SF拆分'
-    dictDirection['O'] = u'SF合并'
-    dictDirection['P'] = u'备兑'
-    dictDirection['Q'] = u'证券冻结/解冻'
-    dictDirection['R'] = u'行权'    
+    dictDirection['0'] = '买'
+    dictDirection['1'] = '卖'
+    dictDirection['2'] = 'ETF申购'
+    dictDirection['3'] = 'ETF赎回'
+    dictDirection['L'] = 'OF申购'
+    dictDirection['M'] = 'OF赎回'
+    dictDirection['N'] = 'SF拆分'
+    dictDirection['O'] = 'SF合并'
+    dictDirection['P'] = '备兑'
+    dictDirection['Q'] = '证券冻结/解冻'
+    dictDirection['R'] = '行权'    
 
     dictOffset = OrderedDict()
-    dictOffset['0'] = u'开仓'
-    dictOffset['1'] = u'平仓' 
+    dictOffset['0'] = '开仓'
+    dictOffset['1'] = '平仓' 
 
     dictPriceType = OrderedDict()
-    dictPriceType['1'] = u'市价'
-    dictPriceType['2'] = u'限价'
-    dictPriceType['3'] = u'最优五档剩余撤销'
-    dictPriceType['4'] = u'最优五档剩余限价'
-    dictPriceType['5'] = u'全部成交或撤销'
-    dictPriceType['6'] = u'本方最优市价'
-    dictPriceType['7'] = u'对方最优市价'
+    dictPriceType['1'] = '市价'
+    dictPriceType['2'] = '限价'
+    dictPriceType['3'] = '最优五档剩余撤销'
+    dictPriceType['4'] = '最优五档剩余限价'
+    dictPriceType['5'] = '全部成交或撤销'
+    dictPriceType['6'] = '本方最优市价'
+    dictPriceType['7'] = '对方最优市价'
 
     # 反转字典
-    dictDirectionReverse = {value:key for key,value in dictDirection.items()}
-    dictOffsetReverse = {value:key for key, value in dictOffset.items()}
-    dictPriceTypeReverse = {value:key for key, value in dictPriceType.items()}
+    dictDirectionReverse = {value: key for key, value in list(dictDirection.items())}
+    dictOffsetReverse = {value: key for key, value in list(dictOffset.items())}
+    dictPriceTypeReverse = {value: key for key, value in list(dictPriceType.items())}
 
     #----------------------------------------------------------------------
     def __init__(self, eventEngine, mainEngine, orderMonitor, parent=None):
@@ -828,25 +828,25 @@ class TradingWidget(QtGui.QWidget):
     #----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
-        self.setWindowTitle(u'交易')
+        self.setWindowTitle('交易')
 
         # 左边部分
-        labelID = QtGui.QLabel(u'代码')
-        labelName =  QtGui.QLabel(u'名称')
-        labelDirection = QtGui.QLabel(u'委托类型')
-        labelOffset = QtGui.QLabel(u'开平')
-        labelPrice = QtGui.QLabel(u'价格')
-        labelVolume = QtGui.QLabel(u'数量')
-        labelPriceType = QtGui.QLabel(u'价格类型')
+        labelID = QtGui.QLabel('代码')
+        labelName = QtGui.QLabel('名称')
+        labelDirection = QtGui.QLabel('委托类型')
+        labelOffset = QtGui.QLabel('开平')
+        labelPrice = QtGui.QLabel('价格')
+        labelVolume = QtGui.QLabel('数量')
+        labelPriceType = QtGui.QLabel('价格类型')
 
         self.lineID = QtGui.QLineEdit()
         self.lineName = QtGui.QLineEdit()
 
         self.comboDirection = QtGui.QComboBox()
-        self.comboDirection.addItems(self.dictDirection.values())
+        self.comboDirection.addItems(list(self.dictDirection.values()))
 
         self.comboOffset = QtGui.QComboBox()
-        self.comboOffset.addItems(self.dictOffset.values())
+        self.comboOffset.addItems(list(self.dictOffset.values()))
 
         self.spinPrice = QtGui.QDoubleSpinBox()
         self.spinPrice.setDecimals(4)
@@ -858,7 +858,7 @@ class TradingWidget(QtGui.QWidget):
         self.spinVolume.setMaximum(1000000)
 
         self.comboPriceType = QtGui.QComboBox()
-        self.comboPriceType.addItems(self.dictPriceType.values())
+        self.comboPriceType.addItems(list(self.dictPriceType.values()))
 
         gridleft = QtGui.QGridLayout()
         gridleft.addWidget(labelID, 0, 0)
@@ -877,17 +877,17 @@ class TradingWidget(QtGui.QWidget):
         gridleft.addWidget(self.comboPriceType, 6, 1)	
 
         # 右边部分
-        labelBid1 = QtGui.QLabel(u'买一')
-        labelBid2 = QtGui.QLabel(u'买二')
-        labelBid3 = QtGui.QLabel(u'买三')
-        labelBid4 = QtGui.QLabel(u'买四')
-        labelBid5 = QtGui.QLabel(u'买五')
+        labelBid1 = QtGui.QLabel('买一')
+        labelBid2 = QtGui.QLabel('买二')
+        labelBid3 = QtGui.QLabel('买三')
+        labelBid4 = QtGui.QLabel('买四')
+        labelBid5 = QtGui.QLabel('买五')
 
-        labelAsk1 = QtGui.QLabel(u'卖一')
-        labelAsk2 = QtGui.QLabel(u'卖二')
-        labelAsk3 = QtGui.QLabel(u'卖三')
-        labelAsk4 = QtGui.QLabel(u'卖四')
-        labelAsk5 = QtGui.QLabel(u'卖五')
+        labelAsk1 = QtGui.QLabel('卖一')
+        labelAsk2 = QtGui.QLabel('卖二')
+        labelAsk3 = QtGui.QLabel('卖三')
+        labelAsk4 = QtGui.QLabel('卖四')
+        labelAsk5 = QtGui.QLabel('卖五')
 
         self.labelBidPrice1 = QtGui.QLabel()
         self.labelBidPrice2 = QtGui.QLabel()
@@ -909,9 +909,9 @@ class TradingWidget(QtGui.QWidget):
         self.labelAskVolume2 = QtGui.QLabel()
         self.labelAskVolume3 = QtGui.QLabel()
         self.labelAskVolume4 = QtGui.QLabel()
-        self.labelAskVolume5 = QtGui.QLabel()	
+        self.labelAskVolume5 = QtGui.QLabel()
 
-        labelLast = QtGui.QLabel(u'最新')
+        labelLast = QtGui.QLabel('最新')
         self.labelLastPrice = QtGui.QLabel()
         self.labelReturn = QtGui.QLabel()
 
@@ -956,8 +956,8 @@ class TradingWidget(QtGui.QWidget):
         gridRight.addWidget(self.labelBidVolume5, 10, 2)
 
         # 发单按钮
-        buttonSendOrder = QtGui.QPushButton(u'发单')
-        buttonCancelAll = QtGui.QPushButton(u'全撤')
+        buttonSendOrder = QtGui.QPushButton('发单')
+        buttonCancelAll = QtGui.QPushButton('全撤')
 
         # 整合布局
         hbox = QtGui.QHBoxLayout()
@@ -1071,11 +1071,11 @@ class TradingWidget(QtGui.QWidget):
         instrument = self.__mainEngine.selectInstrument(instrumentid)
         if instrument:
             exchangeid = instrument['ExchangeID']
-            direction = self.dictDirectionReverse[unicode(self.comboDirection.currentText())]
-            offset = self.dictOffsetReverse[unicode(self.comboOffset.currentText())]
+            direction = self.dictDirectionReverse[str(self.comboDirection.currentText())]
+            offset = self.dictOffsetReverse[str(self.comboOffset.currentText())]
             price = float(self.spinPrice.value())
             volume = int(self.spinVolume.value())
-            pricetype = self.dictPriceTypeReverse[unicode(self.comboPriceType.currentText())]
+            pricetype = self.dictPriceTypeReverse[str(self.comboPriceType.currentText())]
             self.__mainEngine.sendOrder(instrumentid, exchangeid, price, pricetype, volume ,direction, offset)
 
 
@@ -1093,9 +1093,9 @@ class AboutWidget(QtGui.QDialog):
     #----------------------------------------------------------------------
     def initUi(self):
         """"""
-        self.setWindowTitle(u'关于')
+        self.setWindowTitle('关于')
 
-        text = u"""
+        text = """
             vn.py框架Demo  
 
             完成日期：2015/4/17 
@@ -1160,7 +1160,7 @@ class MainWindow(QtGui.QMainWindow):
     def initUi(self):
         """"""
         # 设置名称
-        self.setWindowTitle(u'欢迎使用vn.py框架Demo')
+        self.setWindowTitle('欢迎使用vn.py框架Demo')
 
         # 布局设置
         self.logM = LogMonitor(self.__eventEngine, self)
@@ -1172,13 +1172,13 @@ class MainWindow(QtGui.QMainWindow):
         self.tradingW = TradingWidget(self.__eventEngine, self.__mainEngine, self.orderM, self)
 
         righttab = QtGui.QTabWidget()
-        righttab.addTab(self.positionM, u'持仓')
-        righttab.addTab(self.accountM, u'账户')
+        righttab.addTab(self.positionM, '持仓')
+        righttab.addTab(self.accountM, '账户')
 
         lefttab = QtGui.QTabWidget()
-        lefttab.addTab(self.orderM, u'报单')
-        lefttab.addTab(self.tradeM, u'成交')
-        lefttab.addTab(self.logM, u'日志')
+        lefttab.addTab(self.orderM, '报单')
+        lefttab.addTab(self.tradeM, '成交')
+        lefttab.addTab(self.logM, '日志')
 
         self.tradingW.setMaximumWidth(400)
         tradingVBox = QtGui.QVBoxLayout()
@@ -1203,23 +1203,23 @@ class MainWindow(QtGui.QMainWindow):
 
         # 设置状态栏
         self.bar = self.statusBar()
-        self.bar.showMessage(u'启动Demo')
+        self.bar.showMessage('启动Demo')
 
         # 设置菜单栏
-        actionLogin = QtGui.QAction(u'登录', self)
+        actionLogin = QtGui.QAction('登录', self)
         actionLogin.triggered.connect(self.openLoginWidget)
-        actionExit = QtGui.QAction(u'退出', self)
+        actionExit = QtGui.QAction('退出', self)
         actionExit.triggered.connect(self.close)
 
-        actionAbout = QtGui.QAction(u'关于', self)
+        actionAbout = QtGui.QAction('关于', self)
         actionAbout.triggered.connect(self.openAboutWidget)		
 
         menubar = self.menuBar()
-        sysMenu = menubar.addMenu(u'系统')
+        sysMenu = menubar.addMenu('系统')
         sysMenu.addAction(actionLogin)
         sysMenu.addAction(actionExit)
 
-        helpMenu = menubar.addMenu(u'帮助')
+        helpMenu = menubar.addMenu('帮助')
         helpMenu.addAction(actionAbout)
 
     #----------------------------------------------------------------------
@@ -1236,7 +1236,7 @@ class MainWindow(QtGui.QMainWindow):
         """"""
         data = event.dict_['data']
 
-        self.setWindowTitle(u'欢迎使用vn.py框架Demo  ' + data['InvestorName'].decode('GBK'))
+        self.setWindowTitle('欢迎使用vn.py框架Demo  ' + data['InvestorName'].decode('GBK'))
 
     #----------------------------------------------------------------------
     def updateLog(self, event):
@@ -1266,8 +1266,8 @@ class MainWindow(QtGui.QMainWindow):
     #----------------------------------------------------------------------
     def closeEvent(self, event):
         """退出事件处理"""
-        reply = QtGui.QMessageBox.question(self, u'退出',
-                                           u'确认退出?', QtGui.QMessageBox.Yes | 
+        reply = QtGui.QMessageBox.question(self, '退出',
+                                           '确认退出?', QtGui.QMessageBox.Yes |
                                            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 
         if reply == QtGui.QMessageBox.Yes:

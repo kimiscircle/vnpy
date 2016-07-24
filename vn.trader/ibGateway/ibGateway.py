@@ -32,7 +32,7 @@ from vtGateway import *
 priceTypeMap = {}
 priceTypeMap[PRICETYPE_LIMITPRICE] = 'LMT'
 priceTypeMap[PRICETYPE_MARKETPRICE] = 'MKT'
-priceTypeMapReverse = {v: k for k, v in priceTypeMap.items()} 
+priceTypeMapReverse = {v: k for k, v in list(priceTypeMap.items())} 
 
 # 方向类型映射
 directionMap = {}
@@ -40,7 +40,7 @@ directionMap[DIRECTION_LONG] = 'BUY'
 #directionMap[DIRECTION_SHORT] = 'SSHORT'   # SSHORT在IB系统中代表对股票的融券做空（而不是国内常见的卖出）
 directionMap[DIRECTION_SHORT] = 'SELL'      # 出于和国内的统一性考虑，这里选择把IB里的SELL印射为vt的SHORT
 
-directionMapReverse = {v: k for k, v in directionMap.items()}
+directionMapReverse = {v: k for k, v in list(directionMap.items())}
 directionMapReverse['BOT'] = DIRECTION_LONG
 directionMapReverse['SLD'] = DIRECTION_SHORT
 
@@ -50,14 +50,14 @@ exchangeMap[EXCHANGE_SMART] = 'SMART'
 exchangeMap[EXCHANGE_NYMEX] = 'NYMEX'
 exchangeMap[EXCHANGE_GLOBEX] = 'GLOBEX'
 exchangeMap[EXCHANGE_IDEALPRO] = 'IDEALPRO'
-exchangeMapReverse = {v:k for k,v in exchangeMap.items()}
+exchangeMapReverse = {v: k for k, v in list(exchangeMap.items())}
 
 # 报单状态映射
 orderStatusMap = {}
 orderStatusMap[STATUS_NOTTRADED] = 'Submitted'
 orderStatusMap[STATUS_ALLTRADED] = 'Filled'
 orderStatusMap[STATUS_CANCELLED] = 'Cancelled'
-orderStatusMapReverse = {v:k for k,v in orderStatusMap.items()}
+orderStatusMapReverse = {v: k for k, v in list(orderStatusMap.items())}
 orderStatusMapReverse['PendingSubmit'] = STATUS_UNKNOWN     # 这里未来视乎需求可以拓展vt订单的状态类型
 orderStatusMapReverse['PendingCancel'] = STATUS_UNKNOWN
 orderStatusMapReverse['PreSubmitted'] = STATUS_UNKNOWN
@@ -69,19 +69,19 @@ productClassMap[PRODUCT_EQUITY] = 'STK'
 productClassMap[PRODUCT_FUTURES] = 'FUT'
 productClassMap[PRODUCT_OPTION] = 'OPT'
 productClassMap[PRODUCT_FOREX] = 'CASH'
-productClassMapReverse = {v:k for k,v in productClassMap.items()}
+productClassMapReverse = {v: k for k, v in list(productClassMap.items())}
 
 # 期权类型映射
 optionTypeMap = {}
 optionTypeMap[OPTION_CALL] = 'CALL'
 optionTypeMap[OPTION_PUT] = 'PUT'
-optionTypeMap = {v:k for k,v in optionTypeMap.items()}
+optionTypeMap = {v: k for k, v in list(optionTypeMap.items())}
 
 # 货币类型映射
 currencyMap = {}
 currencyMap[CURRENCY_USD] = 'USD'
 currencyMap[CURRENCY_CNY] = 'CNY'
-currencyMap = {v:k for k,v in currencyMap.items()}
+currencyMap = {v: k for k, v in list(currencyMap.items())}
 
 # Tick数据的Field和名称映射
 tickFieldMap = {}
@@ -150,7 +150,7 @@ class IbGateway(VtGateway):
         except IOError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'读取连接配置出错，请检查'
+            log.logContent = '读取连接配置出错，请检查'
             self.onLog(log)
             return
         
@@ -163,7 +163,7 @@ class IbGateway(VtGateway):
         except KeyError:
             log = VtLogData()
             log.gatewayName = self.gatewayName
-            log.logContent = u'连接配置缺少字段，请检查'
+            log.logContent = '连接配置缺少字段，请检查'
             self.onLog(log)
             return            
         
@@ -264,16 +264,16 @@ class IbGateway(VtGateway):
     def qryAccount(self):
         """查询账户资金"""
         log = VtLogData()
-        log.gatewayName = self.gatewayName        
-        log.logContent = u'IB接口账户信息提供主推更新，无需查询'
+        log.gatewayName = self.gatewayName
+        log.logContent = 'IB接口账户信息提供主推更新，无需查询'
         self.onLog(log) 
     
     #----------------------------------------------------------------------
     def qryPosition(self):
         """查询持仓"""
         log = VtLogData()
-        log.gatewayName = self.gatewayName        
-        log.logContent = u'IB接口持仓信息提供主推更新，无需查询'
+        log.gatewayName = self.gatewayName
+        log.logContent = 'IB接口持仓信息提供主推更新，无需查询'
         self.onLog(log) 
     
     #----------------------------------------------------------------------
@@ -322,7 +322,7 @@ class IbWrapper(EWrapper):
             newtick = copy(tick)
             self.gateway.onTick(newtick)
         else:
-            print field
+            print(field)
 
     #----------------------------------------------------------------------
     def tickSize(self, tickerId, field, size):
@@ -340,7 +340,7 @@ class IbWrapper(EWrapper):
             newtick = copy(tick)
             self.gateway.onTick(newtick)      
         else:
-            print field
+            print(field)
 
     #----------------------------------------------------------------------
     def tickOptionComputation(self, tickerId, field, impliedVol, delta, optPrice, pvDividend, gamma, vega, theta, undPrice):
@@ -455,7 +455,7 @@ class IbWrapper(EWrapper):
     def updateAccountTime(self, timeStamp):
         """更新账户数据的时间"""
         # 推送数据
-        for account in self.accountDict.values():
+        for account in list(self.accountDict.values()):
             newaccount = copy(account)
             self.gateway.onAccount(newaccount)
 
@@ -583,10 +583,10 @@ class IbWrapper(EWrapper):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = (u'IB接口连接成功，当前服务器时间 %s' %t)
-        self.gateway.onLog(log) 
-        
-        for symbol, req in self.subscribeReqDict.items():
+        log.logContent = ('IB接口连接成功，当前服务器时间 %s' % t)
+        self.gateway.onLog(log)
+
+        for symbol, req in list(self.subscribeReqDict.items()):
             del self.subscribeReqDict[symbol]
             self.gateway.subscribe(req)        
 
@@ -669,5 +669,5 @@ class IbWrapper(EWrapper):
         
         log = VtLogData()
         log.gatewayName = self.gatewayName
-        log.logContent = (u'IB接口连接断开')
+        log.logContent = ('IB接口连接断开')
         self.gateway.onLog(log) 

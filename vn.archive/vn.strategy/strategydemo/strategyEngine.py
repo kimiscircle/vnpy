@@ -197,9 +197,9 @@ class StrategyEngine(object):
             self.__mongoConnection = Connection()
             self.__mongoConnected = True
             self.__mongoTickDB = self.__mongoConnection['TickDB']
-            self.writeLog(u'策略引擎连接MongoDB成功')
+            self.writeLog('策略引擎连接MongoDB成功')
         except ConnectionFailure:
-            self.writeLog(u'策略引擎连接MongoDB失败')
+            self.writeLog('策略引擎连接MongoDB失败')
 
     #----------------------------------------------------------------------
     def __recordTick(self, data):
@@ -497,13 +497,13 @@ class StrategyEngine(object):
     #----------------------------------------------------------------------
     def startAll(self):
         """启动所有策略"""
-        for strategy in self.dictStrategy.values():
+        for strategy in list(self.dictStrategy.values()):
             strategy.start()
             
     #----------------------------------------------------------------------
     def stopAll(self):
         """停止所有策略"""
-        for strategy in self.dictStrategy.values():
+        for strategy in list(self.dictStrategy.values()):
             strategy.stop()
 
 
@@ -553,7 +553,7 @@ class StrategyTemplate(object):
         有需要可以重新实现更复杂的操作
         """
         self.trading = True
-        self.engine.writeLog(self.name + u'开始运行')
+        self.engine.writeLog(self.name + '开始运行')
         
     #----------------------------------------------------------------------
     def stop(self):
@@ -562,7 +562,7 @@ class StrategyTemplate(object):
         同上
         """
         self.trading = False
-        self.engine.writeLog(self.name + u'停止运行')
+        self.engine.writeLog(self.name + '停止运行')
         
     #----------------------------------------------------------------------
     def loadSetting(self, setting):

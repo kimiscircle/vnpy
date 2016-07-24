@@ -62,7 +62,7 @@ class BacktestingEngine(object):
     def setStrategyEngine(self, engine):
         """设置策略引擎"""
         self.strategyEngine = engine
-        self.writeLog(u'策略引擎设置完成')
+        self.writeLog('策略引擎设置完成')
     
     #----------------------------------------------------------------------
     def connectMongo(self):
@@ -71,9 +71,9 @@ class BacktestingEngine(object):
             self.__mongoConnection = Connection()
             self.__mongoConnected = True
             self.__mongoTickDB = self.__mongoConnection['TickDB']
-            self.writeLog(u'回测引擎连接MongoDB成功')
+            self.writeLog('回测引擎连接MongoDB成功')
         except ConnectionFailure:
-            self.writeLog(u'回测引擎连接MongoDB失败') 
+            self.writeLog('回测引擎连接MongoDB失败') 
             
     #----------------------------------------------------------------------
     def loadDataHistory(self, symbol, startDate, endDate):
@@ -91,15 +91,15 @@ class BacktestingEngine(object):
             
             # 将TICK数据读入内存
             self.listDataHistory = [data for data in cx]
-            
-            self.writeLog(u'历史TICK数据载入完成')
+
+            self.writeLog('历史TICK数据载入完成')
         else:
-            self.writeLog(u'MongoDB未连接，请检查')
+            self.writeLog('MongoDB未连接，请检查')
             
     #----------------------------------------------------------------------
     def processLimitOrder(self):
         """处理限价单"""
-        for ref, order in self.dictOrder.items():
+        for ref, order in list(self.dictOrder.items()):
             # 如果是买单，且限价大于等于当前TICK的卖一价，则假设成交
             if order.direction == DIRECTION_BUY and \
                order.price >= self.currentData['AskPrice1']:
@@ -156,7 +156,7 @@ class BacktestingEngine(object):
     #----------------------------------------------------------------------
     def startBacktesting(self):
         """开始回测"""
-        self.writeLog(u'开始回测')
+        self.writeLog('开始回测')
         
         for data in self.listDataHistory:
             # 记录最新的TICK数据
@@ -171,8 +171,8 @@ class BacktestingEngine(object):
             self.strategyEngine.updateMarketData(event)
             
         self.saveTradeData()
-        
-        self.writeLog(u'回测结束')
+
+        self.writeLog('回测结束')
     
     #----------------------------------------------------------------------
     def sendOrder(self, instrumentid, exchangeid, price, pricetype, volume, direction, offset):
@@ -199,7 +199,7 @@ class BacktestingEngine(object):
     #----------------------------------------------------------------------
     def writeLog(self, log):
         """写日志"""
-        print log
+        print(log)
         
     #----------------------------------------------------------------------
     def selectInstrument(self, symbol):

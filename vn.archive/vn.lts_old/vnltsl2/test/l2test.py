@@ -11,16 +11,16 @@ from vnltsl2 import *
 #----------------------------------------------------------------------
 def print_dict(d):
     """按照键值打印一个字典"""
-    for key,value in d.items():
-        print key + ':' + str(value)
+    for key, value in list(d.items()):
+        print(key + ':' + str(value))
         
         
 #----------------------------------------------------------------------
 def simple_log(func):
     """简单装饰器用于输出函数名"""
     def wrapper(*args, **kw):
-        print ""
-        print str(func.__name__)
+        print("")
+        print(str(func.__name__))
         return func(*args, **kw)
     return wrapper
 
@@ -46,13 +46,13 @@ class TestL2MdApi(L2MdApi):
     @simple_log    
     def onFrontDisconnected(self, n):
         """服务器断开"""
-        print n
+        print(n)
         
     #----------------------------------------------------------------------
     @simple_log    
     def onHeartBeatWarning(self, n):
         """心跳报警"""
-        print n
+        print(n)
     
     #----------------------------------------------------------------------
     @simple_log    
@@ -143,8 +143,8 @@ class TestL2MdApi(L2MdApi):
     @simple_log    
     def onNtfCheckOrderList(self, instrumentID, functionID):
         """通知清理SSE买卖一队列中数量为0的报单"""
-        print 'instrumentID: %s' % instrumentID
-        print 'functionID: %s' % functionID
+        print('instrumentID: %s' % instrumentID)
+        print('functionID: %s' % functionID)
 
 #----------------------------------------------------------------------
 def main():

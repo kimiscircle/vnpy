@@ -70,9 +70,9 @@ class SimpleEmaStrategy(StrategyTemplate):
         try:
             self.fastAlpha = setting['fastAlpha']
             self.slowAlpha = setting['slowAlpha']
-            self.engine.writeLog(self.name + u'读取参数成功')
+            self.engine.writeLog(self.name + '读取参数成功')
         except KeyError:
-            self.engine.writeLog(self.name + u'读取参数设定出错，请检查参数字典')
+            self.engine.writeLog(self.name + '读取参数设定出错，请检查参数字典')
         
         try:
             self.initStrategy(setting['startDate'])
@@ -135,8 +135,8 @@ class SimpleEmaStrategy(StrategyTemplate):
                 self.onTick(tick)
                 
         self.initCompleted = True
-        
-        self.engine.writeLog(self.name + u'初始化完成')
+
+        self.engine.writeLog(self.name + '初始化完成')
             
     #----------------------------------------------------------------------
     def onTick(self, tick):
@@ -185,9 +185,9 @@ class SimpleEmaStrategy(StrategyTemplate):
         if trade.direction == DIRECTION_BUY:
             self.pos = self.pos + trade.volume
         else:
-            self.pos = self.pos - trade.volume 
-            
-        log = self.name + u'当前持仓：' + str(self.pos)
+            self.pos = self.pos - trade.volume
+
+        log = self.name + '当前持仓：' + str(self.pos)
         self.engine.writeLog(log)
         
     #----------------------------------------------------------------------
@@ -241,9 +241,9 @@ class SimpleEmaStrategy(StrategyTemplate):
                     self.short(self.currentTick.lowerLimit, 1)
         
             # 记录日志
-            log = self.name + u'，K线时间：' + str(time) + '\n' + \
-                u'，快速EMA：' + str(self.fastEMA) + u'，慢速EMA：' + \
-                str(self.slowEMA)
+            log = self.name + '，K线时间：' + str(time) + '\n' + \
+                  '，快速EMA：' + str(self.fastEMA) + '，慢速EMA：' + \
+                  str(self.slowEMA)
             self.engine.writeLog(log)
             
     #----------------------------------------------------------------------
@@ -257,7 +257,7 @@ class SimpleEmaStrategy(StrategyTemplate):
 def print_log(event):
     """打印日志"""
     log = event.dict_['log']
-    print str(datetime.now()), ':', log
+    print(str(datetime.now()), ':', log)
     
 
 #----------------------------------------------------------------------
@@ -291,7 +291,7 @@ def main():
     setting = {}
     setting['fastAlpha'] = 0.2
     setting['slowAlpha'] = 0.05
-    se.createStrategy(u'EMA演示策略', 'IF1506', SimpleEmaStrategy, setting)
+    se.createStrategy('EMA演示策略', 'IF1506', SimpleEmaStrategy, setting)
     
     # 启动所有策略
     se.startAll()

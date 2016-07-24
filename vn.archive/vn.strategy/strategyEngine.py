@@ -196,9 +196,9 @@ class StrategyEngine(object):
             self.__mongoConnection = Connection()
             self.__mongoConnected = True
             self.__mongoTickDB = self.__mongoConnection['TickDB']
-            self.writeLog(u'策略引擎连接MongoDB成功')
+            self.writeLog('策略引擎连接MongoDB成功')
         except ConnectionFailure:
-            self.writeLog(u'策略引擎连接MongoDB失败')
+            self.writeLog('策略引擎连接MongoDB失败')
 
     #----------------------------------------------------------------------
     def __recordTick(self, data):
@@ -360,10 +360,10 @@ class StrategyEngine(object):
     #----------------------------------------------------------------------
     def __updateTrade(self, event):
         """成交更新"""
-        print 'updateTrade'
+        print('updateTrade')
         data = event.dict_['data']
         orderRef = data['OrderRef']
-        print 'trade:', orderRef
+        print('trade:', orderRef)
         
         if orderRef in self.__dictOrderRefStrategy:
             
@@ -405,8 +405,8 @@ class StrategyEngine(object):
                                             offset)
             
         self.__dictOrderRefStrategy[ref] = strategy
-        print 'ref:', ref
-        print 'strategy:', strategy.name
+        print('ref:', ref)
+        print('strategy:', strategy.name)
         
         return ref
 
@@ -494,13 +494,13 @@ class StrategyEngine(object):
     #----------------------------------------------------------------------
     def startAll(self):
         """启动所有策略"""
-        for strategy in self.dictStrategy.values():
+        for strategy in list(self.dictStrategy.values()):
             strategy.start()
             
     #----------------------------------------------------------------------
     def stopAll(self):
         """停止所有策略"""
-        for strategy in self.dictStrategy.values():
+        for strategy in list(self.dictStrategy.values()):
             strategy.stop()
 
 
@@ -550,7 +550,7 @@ class StrategyTemplate(object):
         有需要可以重新实现更复杂的操作
         """
         self.trading = True
-        self.engine.writeLog(self.name + u'开始运行')
+        self.engine.writeLog(self.name + '开始运行')
         
     #----------------------------------------------------------------------
     def stop(self):
@@ -559,7 +559,7 @@ class StrategyTemplate(object):
         同上
         """
         self.trading = False
-        self.engine.writeLog(self.name + u'停止运行')
+        self.engine.writeLog(self.name + '停止运行')
         
     #----------------------------------------------------------------------
     def loadSetting(self, setting):

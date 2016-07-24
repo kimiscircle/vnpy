@@ -8,8 +8,8 @@
 在CTA_setting.json中写入具体每个策略对象的类和合约设置。
 '''
 
-from ctaTemplate import DataRecorder
-from ctaTurtle import TurtleDemo
+from .ctaTemplate import DataRecorder
+from .ctaTurtle import TurtleDemo
 
 STRATEGY_CLASS = {}
 STRATEGY_CLASS['DataRecorder'] = DataRecorder
