@@ -25,10 +25,10 @@ engine.setStartDate('20110101')
 engine.loadHistoryData(DAILY_DB_NAME, 'RB9000')
 
 # 设置产品相关参数
-engine.setSlippage(1)    # 股指1跳
-engine.setRate(0.3/10000)   # 万0.3
-engine.setSize(10)         # 股指合约大小    
-   
+engine.setSlippage(1)  # 股指1跳
+engine.setRate(0.3 / 10000)  # 万0.3
+engine.setSize(10)  # 股指合约大小
+
 # 在引擎中创建策略对象
 engine.initStrategy(TurtleDemo, {})
 

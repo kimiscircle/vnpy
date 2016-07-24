@@ -7,20 +7,20 @@ type_dict = {
     'int': 'int',
     'char': 'string',
     'double': 'float',
-    'long': 'long', 
+    'long': 'long',
     'short': 'short'
 }
 
 
 def process_line(line):
     """处理每行"""
-    if '///' in line:           # 注释
+    if '///' in line:  # 注释
         py_line = process_comment(line)
-    elif 'typedef' in line:     # 类型申明
+    elif 'typedef' in line:  # 类型申明
         py_line = process_typedef(line)
-    elif '#define' in line:     # 定义常量
+    elif '#define' in line:  # 定义常量
         py_line = process_define(line)
-    elif line == '\n':          # 空行
+    elif line == '\n':  # 空行
         py_line = line
     else:
         py_line = ''
@@ -42,7 +42,7 @@ def process_typedef(line):
     """处理类型申明"""
     content = line.split(' ')
     type_ = type_dict[content[1]]
-    
+
     if content[1] != 'unsigned':
         keyword = content[-1]
     else:
@@ -72,7 +72,7 @@ def process_define(line):
     content = line.split(' ')
     constant = content[1]
 
-    if len(content)>2:
+    if len(content) > 2:
         value = content[-1]
         py_line = 'defineDict["%s"] = %s' % (constant, value)
     else:
@@ -84,7 +84,7 @@ def process_define(line):
 def main():
     """主函数"""
     try:
-        fcpp = open('DFITCApiDataType.h','r')
+        fcpp = open('DFITCApiDataType.h', 'r')
         fpy = open('xspeed_data_type.py', 'w')
 
         fpy.write('# encoding: UTF-8\n')
@@ -97,7 +97,7 @@ def main():
             py_line = process_line(line)
             if py_line:
                 fpy.write(py_line.decode('gbk').encode('utf-8'))
-                print(n) 
+                print(n)
 
         fcpp.close()
         fpy.close()
@@ -110,4 +110,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

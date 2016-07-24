@@ -4,7 +4,6 @@
 风控模块相关的GUI控制组件
 '''
 
-
 from uiBasicWidget import QtGui, QtCore
 from eventEngine import *
 
@@ -13,56 +12,52 @@ from eventEngine import *
 class RmSpinBox(QtGui.QSpinBox):
     """调整参数用的数值框"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, value):
         """Constructor"""
         super(RmSpinBox, self).__init__()
 
         self.setMinimum(0)
         self.setMaximum(1000000)
-        
+
         self.setValue(value)
-    
-    
 
 
 ########################################################################
 class RmLine(QtGui.QFrame):
     """水平分割线"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self):
         """Constructor"""
         super(RmLine, self).__init__()
         self.setFrameShape(self.HLine)
         self.setFrameShadow(self.Sunken)
-    
-    
-  
+
 
 ########################################################################
 class RmEngineManager(QtGui.QWidget):
     """风控引擎的管理组件"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, rmEngine, eventEngine, parent=None):
         """Constructor"""
         super(RmEngineManager, self).__init__(parent)
-        
+
         self.rmEngine = rmEngine
         self.eventEngine = eventEngine
-        
+
         self.initUi()
         self.updateEngineStatus()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
         self.setWindowTitle('风险管理')
-        
+
         # 设置界面
         self.buttonSwitchEngineStatus = QtGui.QPushButton('风控模块未启动')
-        
+
         self.spinOrderFlowLimit = RmSpinBox(self.rmEngine.orderFlowLimit)
         self.spinOrderFlowClear = RmSpinBox(self.rmEngine.orderFlowClear)
         self.spinOrderSizeLimit = RmSpinBox(self.rmEngine.orderSizeLimit)
@@ -72,7 +67,7 @@ class RmEngineManager(QtGui.QWidget):
         buttonClearOrderFlowCount = QtGui.QPushButton('清空流控计数')
         buttonClearTradeCount = QtGui.QPushButton('清空总成交计数')
         buttonSaveSetting = QtGui.QPushButton('保存设置')
-        
+
         Label = QtGui.QLabel
         grid = QtGui.QGridLayout()
         grid.addWidget(Label('工作状态'), 0, 0)
@@ -91,40 +86,40 @@ class RmEngineManager(QtGui.QWidget):
         grid.addWidget(RmLine(), 8, 0, 1, 2)
         grid.addWidget(Label('活动订单上限'), 9, 0)
         grid.addWidget(self.spinWorkingOrderLimit, 9, 1)
-        
+
         hbox = QtGui.QHBoxLayout()
         hbox.addWidget(buttonClearOrderFlowCount)
         hbox.addWidget(buttonClearTradeCount)
         hbox.addStretch()
         hbox.addWidget(buttonSaveSetting)
-        
+
         vbox = QtGui.QVBoxLayout()
         vbox.addLayout(grid)
         vbox.addLayout(hbox)
         self.setLayout(vbox)
-        
+
         # 连接组件信号
         self.spinOrderFlowLimit.valueChanged.connect(self.rmEngine.setOrderFlowLimit)
         self.spinOrderFlowClear.valueChanged.connect(self.rmEngine.setOrderFlowClear)
         self.spinOrderSizeLimit.valueChanged.connect(self.rmEngine.setOrderSizeLimit)
         self.spinTradeLimit.valueChanged.connect(self.rmEngine.setTradeLimit)
         self.spinWorkingOrderLimit.valueChanged.connect(self.rmEngine.setWorkingOrderLimit)
-        
+
         self.buttonSwitchEngineStatus.clicked.connect(self.switchEngineSatus)
         buttonClearOrderFlowCount.clicked.connect(self.rmEngine.clearOrderFlowCount)
         buttonClearTradeCount.clicked.connect(self.rmEngine.clearTradeCount)
         buttonSaveSetting.clicked.connect(self.rmEngine.saveSetting)
-        
+
         # 设为固定大小
         self.setFixedSize(self.sizeHint())
-        
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def switchEngineSatus(self):
         """控制风控引擎开关"""
         self.rmEngine.switchEngineStatus()
         self.updateEngineStatus()
-        
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def updateEngineStatus(self):
         """更新引擎状态"""
         if self.rmEngine.active:

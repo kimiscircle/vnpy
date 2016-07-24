@@ -14,23 +14,22 @@ from demoEngine import MainEngine
 from strategyEngine import *
 
 
-
 ########################################################################
 class SimpleEmaStrategy(StrategyTemplate):
     """简单双指数移动均线EMA策略"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, name, symbol, engine):
         """Constructor"""
         super(SimpleEmaStrategy, self).__init__(name, symbol, engine)
-        
+
         # 策略在外部设置的参数
-        self.fastAlpha = 0.2    # 快速EMA的参数
-        self.slowAlpha = 0.05   # 慢速EMA的参数  
-        
+        self.fastAlpha = 0.2  # 快速EMA的参数
+        self.slowAlpha = 0.05  # 慢速EMA的参数
+
         # 最新TICK数据（市场报价）
         self.currentTick = None
-        
+
         # K线缓存对象
         self.barOpen = 0
         self.barHigh = 0
@@ -38,7 +37,7 @@ class SimpleEmaStrategy(StrategyTemplate):
         self.barClose = 0
         self.barVolume = 0
         self.barTime = None
-        
+
         # 保存K线数据的列表对象
         self.listOpen = []
         self.listHigh = []
@@ -46,25 +45,26 @@ class SimpleEmaStrategy(StrategyTemplate):
         self.listClose = []
         self.listVolume = []
         self.listTime = []
-        
+
         # 持仓
         self.pos = 0
-        
+
         # 报单代码列表
         self.listOrderRef = []  # 报单号列表
-        self.listStopOrder = [] # 停止单对象列表
-        
+        self.listStopOrder = []  # 停止单对象列表
+
         # EMA均线
-        self.fastEMA = 0        # 快速EMA的数值
-        self.slowEMA = 0        # 慢速EMA的数值
-        
+        self.fastEMA = 0  # 快速EMA的数值
+        self.slowEMA = 0  # 慢速EMA的数值
+
         # 是否完成了初始化
         self.initCompleted = False
-        
+
         # 初始化时读取的历史数据的起始日期(可以选择外部设置)
-        self.startDate = None     
-        
-    #----------------------------------------------------------------------
+        self.startDate = None
+
+        # ----------------------------------------------------------------------
+
     def loadSetting(self, setting):
         """读取参数设定"""
         try:
@@ -73,80 +73,80 @@ class SimpleEmaStrategy(StrategyTemplate):
             self.engine.writeLog(self.name + '读取参数成功')
         except KeyError:
             self.engine.writeLog(self.name + '读取参数设定出错，请检查参数字典')
-        
+
         try:
             self.initStrategy(setting['startDate'])
         except KeyError:
             self.initStrategy()
-        
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def initStrategy(self, startDate=None):
         """初始化"""
-        td = timedelta(days=3)     # 读取3天的历史TICK数据
-        
+        td = timedelta(days=3)  # 读取3天的历史TICK数据
+
         if startDate:
-            cx = self.engine.loadTick(self.symbol, startDate-td)
+            cx = self.engine.loadTick(self.symbol, startDate - td)
         else:
             today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
-            cx = self.engine.loadTick(self.symbol, today-td)  
-        
+            cx = self.engine.loadTick(self.symbol, today - td)
+
         if cx:
             for data in cx:
                 tick = Tick(data['InstrumentID'])
-            
+
                 tick.openPrice = data['OpenPrice']
                 tick.highPrice = data['HighestPrice']
                 tick.lowPrice = data['LowestPrice']
                 tick.lastPrice = data['LastPrice']
-                
+
                 tick.volume = data['Volume']
                 tick.openInterest = data['OpenInterest']
-                
+
                 tick.upperLimit = data['UpperLimitPrice']
                 tick.lowerLimit = data['LowerLimitPrice']
-                
+
                 tick.time = data['UpdateTime']
                 tick.ms = data['UpdateMillisec']
-                
+
                 tick.bidPrice1 = data['BidPrice1']
                 tick.bidPrice2 = data['BidPrice2']
                 tick.bidPrice3 = data['BidPrice3']
                 tick.bidPrice4 = data['BidPrice4']
                 tick.bidPrice5 = data['BidPrice5']
-                
+
                 tick.askPrice1 = data['AskPrice1']
                 tick.askPrice2 = data['AskPrice2']
                 tick.askPrice3 = data['AskPrice3']
                 tick.askPrice4 = data['AskPrice4']
-                tick.askPrice5 = data['AskPrice5']   
-                
+                tick.askPrice5 = data['AskPrice5']
+
                 tick.bidVolume1 = data['BidVolume1']
                 tick.bidVolume2 = data['BidVolume2']
                 tick.bidVolume3 = data['BidVolume3']
                 tick.bidVolume4 = data['BidVolume4']
                 tick.bidVolume5 = data['BidVolume5']
-                
+
                 tick.askVolume1 = data['AskVolume1']
                 tick.askVolume2 = data['AskVolume2']
                 tick.askVolume3 = data['AskVolume3']
                 tick.askVolume4 = data['AskVolume4']
-                tick.askVolume5 = data['AskVolume5']   
-                
+                tick.askVolume5 = data['AskVolume5']
+
                 self.onTick(tick)
-                
+
         self.initCompleted = True
 
         self.engine.writeLog(self.name + '初始化完成')
-            
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def onTick(self, tick):
         """行情更新"""
         # 保存最新的TICK
         self.currentTick = tick
-        
+
         # 首先生成datetime.time格式的时间（便于比较）
         ticktime = self.strToTime(tick.time, tick.ms)
-        
+
         # 假设是收到的第一个TICK
         if self.barOpen == 0:
             # 初始化新的K线数据
@@ -164,22 +164,23 @@ class SimpleEmaStrategy(StrategyTemplate):
                 self.barLow = min(self.barLow, tick.lastPrice)
                 self.barClose = tick.lastPrice
                 self.barVolume = self.barVolume + tick.volume
-                self.barTime = ticktime                
-            # 如果是新一分钟的数据
+                self.barTime = ticktime
+                # 如果是新一分钟的数据
             else:
                 # 首先推送K线数据
-                self.onBar(self.barOpen, self.barHigh, self.barLow, self.barClose, 
+                self.onBar(self.barOpen, self.barHigh, self.barLow, self.barClose,
                            self.barVolume, self.barTime)
-                
+
                 # 初始化新的K线数据
                 self.barOpen = tick.lastPrice
                 self.barHigh = tick.lastPrice
                 self.barLow = tick.lastPrice
                 self.barClose = tick.lastPrice
                 self.barVolume = tick.volume
-                self.barTime = ticktime     
+                self.barTime = ticktime
 
-    #----------------------------------------------------------------------
+                # ----------------------------------------------------------------------
+
     def onTrade(self, trade):
         """交易更新"""
         if trade.direction == DIRECTION_BUY:
@@ -189,18 +190,18 @@ class SimpleEmaStrategy(StrategyTemplate):
 
         log = self.name + '当前持仓：' + str(self.pos)
         self.engine.writeLog(log)
-        
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def onOrder(self, order):
         """报单更新"""
         pass
-    
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def onStopOrder(self, orderRef):
         """停止单更新"""
         pass
-    
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def onBar(self, o, h, l, c, volume, time):
         """K线数据更新"""
         # 保存K线序列数据
@@ -210,17 +211,17 @@ class SimpleEmaStrategy(StrategyTemplate):
         self.listClose.append(c)
         self.listVolume.append(volume)
         self.listTime.append(time)
-        
+
         # 计算EMA
         if self.fastEMA:
-            self.fastEMA = c*self.fastAlpha + self.fastEMA*(1-self.fastAlpha)
-            self.slowEMA = c*self.slowAlpha + self.slowEMA*(1-self.slowAlpha)
+            self.fastEMA = c * self.fastAlpha + self.fastEMA * (1 - self.fastAlpha)
+            self.slowEMA = c * self.slowAlpha + self.slowEMA * (1 - self.slowAlpha)
         else:
             self.fastEMA = c
             self.slowEMA = c
-        
+
         # 交易逻辑
-        if self.initCompleted:      # 首先检查是否是实盘运行还是数据预处理阶段
+        if self.initCompleted:  # 首先检查是否是实盘运行还是数据预处理阶段
             # 快速EMA在慢速EMA上方，做多
             if self.fastEMA > self.slowEMA:
                 # 如果当前手头无仓位，则直接做多
@@ -231,7 +232,7 @@ class SimpleEmaStrategy(StrategyTemplate):
                 elif self.pos < 0:
                     self.cover(self.currentTick.upperLimit, 1)
                     self.buy(self.currentTick.upperLimit, 1)
-            
+
             # 反之，做空
             elif self.fastEMA < self.slowEMA:
                 if self.pos == 0:
@@ -239,72 +240,67 @@ class SimpleEmaStrategy(StrategyTemplate):
                 elif self.pos > 0:
                     self.sell(self.currentTick.lowerLimit, 1)
                     self.short(self.currentTick.lowerLimit, 1)
-        
+
             # 记录日志
             log = self.name + '，K线时间：' + str(time) + '\n' + \
                   '，快速EMA：' + str(self.fastEMA) + '，慢速EMA：' + \
                   str(self.slowEMA)
             self.engine.writeLog(log)
-            
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def strToTime(self, t, ms):
         """从字符串时间转化为time格式的时间"""
         hh, mm, ss = t.split(':')
         tt = time(int(hh), int(mm), int(ss), microsecond=ms)
         return tt
 
-#----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
 def print_log(event):
     """打印日志"""
     log = event.dict_['log']
     print(str(datetime.now()), ':', log)
-    
 
-#----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
 def main():
     """运行在CMD中的演示程度"""
     # 创建PyQt4应用对象
     app = QtCore.QCoreApplication(sys.argv)
-    
+
     # 创建主引擎对象
     me = MainEngine()
-    
+
     # 注册事件监听
     me.ee.register(EVENT_LOG, print_log)
-    
+
     # 登录
     userid = ''
     password = ''
     brokerid = ''
     mdAddress = ''
     tdAddress = ''
-    
+
     me.login(userid, password, brokerid, mdAddress, tdAddress)
-    
+
     # 等待10秒钟（初始化合约数据等）
     sleep(5)
-    
+
     # 创建策略引擎对象
     se = StrategyEngine(me.ee, me)
-    
+
     # 创建策略对象
     setting = {}
     setting['fastAlpha'] = 0.2
     setting['slowAlpha'] = 0.05
     se.createStrategy('EMA演示策略', 'IF1506', SimpleEmaStrategy, setting)
-    
+
     # 启动所有策略
     se.startAll()
-    
+
     # 让程序连续运行
     sys.exit(app.exec_())
-    
-    
+
+
 if __name__ == '__main__':
     main()
-    
-    
-    
-    
-    
-    

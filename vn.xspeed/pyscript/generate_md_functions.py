@@ -6,39 +6,38 @@ from string import join
 from xspeed_struct import structDict
 
 
-
 def processCallBack(line):
     orignalLine = line
-    line = line.replace('        virtual void ', '')      # 删除行首的无效内容
-    line = line.replace('{};\n', '')                # 删除行尾的无效内容
+    line = line.replace('        virtual void ', '')  # 删除行首的无效内容
+    line = line.replace('{};\n', '')  # 删除行尾的无效内容
 
     content = line.split('(')
-    cbName = content[0]                             # 回调函数名称
+    cbName = content[0]  # 回调函数名称
 
-    cbArgs = content[1]                             # 回调函数参数
+    cbArgs = content[1]  # 回调函数参数
     if cbArgs[-1] == ' ':
         cbArgs = cbArgs.replace(') ', '')
     else:
         cbArgs = cbArgs.replace(')', '')
 
-    cbArgsList = cbArgs.split(', ')                 # 将每个参数转化为列表
+    cbArgsList = cbArgs.split(', ')  # 将每个参数转化为列表
 
     cbArgsTypeList = []
     cbArgsValueList = []
 
-    for arg in cbArgsList:                          # 开始处理参数
+    for arg in cbArgsList:  # 开始处理参数
         content = arg.split(' ')
         if len(content) > 1:
             if 'struct' not in content:
-                cbArgsTypeList.append(content[0])           # 参数类型列表
-                cbArgsValueList.append(content[1])          # 参数数据列表
+                cbArgsTypeList.append(content[0])  # 参数类型列表
+                cbArgsValueList.append(content[1])  # 参数数据列表
             else:
-                cbArgsTypeList.append(content[1])           # 参数类型列表
-                cbArgsValueList.append(content[2]+content[3])          # 参数数据列表
+                cbArgsTypeList.append(content[1])  # 参数类型列表
+                cbArgsValueList.append(content[2] + content[3])  # 参数数据列表
 
     createTask(cbName, cbArgsTypeList, cbArgsValueList, orignalLine)
     createProcess(cbName, cbArgsTypeList, cbArgsValueList)
-    
+
     # 生成.h文件中的process部分
     process_line = 'void process' + cbName[2:] + '(Task task);\n'
     fheaderprocess.write(process_line)
@@ -57,21 +56,21 @@ def processCallBack(line):
         on_line = ''
     fheaderon.write(on_line)
     fheaderon.write('\n')
-    
+
     # 生成封装部分
     createWrap(cbName)
-    
 
-#----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
 def createWrap(cbName):
     """在Python封装段代码中进行处理"""
     # 生成.h文件中的on部分
     if 'OnRspError' in cbName:
-        on_line = 'virtual void on' + cbName[2:] + '(dict error)\n'    
-        override_line = '("on' + cbName[2:] + '")(error);\n' 
+        on_line = 'virtual void on' + cbName[2:] + '(dict error)\n'
+        override_line = '("on' + cbName[2:] + '")(error);\n'
     elif 'OnRsp' in cbName:
         on_line = 'virtual void on' + cbName[2:] + '(dict data, dict error)\n'
-        override_line = '("on' + cbName[2:] + '")(data, error);\n' 
+        override_line = '("on' + cbName[2:] + '")(data, error);\n'
     elif 'OnRtn' in cbName:
         on_line = 'virtual void on' + cbName[2:] + '(dict data)\n'
         override_line = '("on' + cbName[2:] + '")(data);\n'
@@ -80,13 +79,13 @@ def createWrap(cbName):
         override_line = '("on' + cbName[2:] + '")(data, error);\n'
     else:
         on_line = ''
-        
+
     if on_line is not '':
         fwrap.write(on_line)
         fwrap.write('{\n')
         fwrap.write('\ttry\n')
         fwrap.write('\t{\n')
-        fwrap.write('\t\tthis->get_override'+override_line)
+        fwrap.write('\t\tthis->get_override' + override_line)
         fwrap.write('\t}\n')
         fwrap.write('\tcatch (error_already_set const &)\n')
         fwrap.write('\t{\n')
@@ -94,8 +93,7 @@ def createWrap(cbName):
         fwrap.write('\t}\n')
         fwrap.write('};\n')
         fwrap.write('\n')
-    
-    
+
 
 def createTask(cbName, cbArgsTypeList, cbArgsValueList, orignalLine):
     # 从回调函数生成任务对象，并放入队列
@@ -150,7 +148,7 @@ def createTask(cbName, cbArgsTypeList, cbArgsValueList, orignalLine):
             ftask.write("\t\t" + type_ + " empty_data = " + type_ + "();\n")
             ftask.write("\t\tmemset(&empty_data, 0, sizeof(empty_data));\n")
             ftask.write("\t\ttask.task_data = empty_data;\n")
-            ftask.write("\t}\n")            
+            ftask.write("\t}\n")
 
     ftask.write("\tthis->task_queue.push(task);\n")
     ftask.write("};\n")
@@ -167,24 +165,24 @@ def createProcess(cbName, cbArgsTypeList, cbArgsValueList):
 
     for i, type_ in enumerate(cbArgsTypeList):
         if 'DFITCErrorRtnField' in type_:
-            fprocess.write("\t"+ type_ + ' task_error = any_cast<' + type_ + '>(task.task_error);\n')
-            fprocess.write("\t"+ "dict error;\n")
+            fprocess.write("\t" + type_ + ' task_error = any_cast<' + type_ + '>(task.task_error);\n')
+            fprocess.write("\t" + "dict error;\n")
 
             struct = structDict[type_]
             for key in list(struct.keys()):
-                fprocess.write("\t"+ 'error["' + key + '"] = task_error.' + key + ';\n')
+                fprocess.write("\t" + 'error["' + key + '"] = task_error.' + key + ';\n')
 
             fprocess.write("\n")
 
             onArgsList.append('error')
 
         elif type_ in structDict:
-            fprocess.write("\t"+ type_ + ' task_data = any_cast<' + type_ + '>(task.task_data);\n')
-            fprocess.write("\t"+ "dict data;\n")
+            fprocess.write("\t" + type_ + ' task_data = any_cast<' + type_ + '>(task.task_data);\n')
+            fprocess.write("\t" + "dict data;\n")
 
             struct = structDict[type_]
             for key in list(struct.keys()):
-                fprocess.write("\t"+ 'data["' + key + '"] = task_data.' + key + ';\n')
+                fprocess.write("\t" + 'data["' + key + '"] = task_data.' + key + ';\n')
 
             fprocess.write("\n")
 
@@ -197,37 +195,37 @@ def createProcess(cbName, cbArgsTypeList, cbArgsValueList):
             onArgsList.append('task.task_id')
 
     onArgs = join(onArgsList, ', ')
-    fprocess.write('\tthis->' + cbName.replace('On', 'on') + '(' + onArgs +');\n')
+    fprocess.write('\tthis->' + cbName.replace('On', 'on') + '(' + onArgs + ');\n')
 
     fprocess.write("};\n")
     fprocess.write("\n")
 
 
 def processFunction(line):
-    line = line.replace('        virtual int ', '')       # 删除行首的无效内容
-    line = line.replace(') = 0;\n', '')                # 删除行尾的无效内容
+    line = line.replace('        virtual int ', '')  # 删除行首的无效内容
+    line = line.replace(') = 0;\n', '')  # 删除行尾的无效内容
 
     content = line.split('(')
-    fcName = content[0]                             # 回调函数名称
+    fcName = content[0]  # 回调函数名称
 
-    fcArgs = content[1]                             # 回调函数参数
+    fcArgs = content[1]  # 回调函数参数
     fcArgs = fcArgs.replace(')', '')
 
-    fcArgsList = fcArgs.split(', ')                 # 将每个参数转化为列表
+    fcArgsList = fcArgs.split(', ')  # 将每个参数转化为列表
 
     fcArgsTypeList = []
     fcArgsValueList = []
 
-    for arg in fcArgsList:                          # 开始处理参数
+    for arg in fcArgsList:  # 开始处理参数
         content = arg.split(' ')
         if len(content) > 3:
-            fcArgsTypeList.append(content[1])           # 参数类型列表
-            fcArgsValueList.append(content[3])          # 参数数据列表
+            fcArgsTypeList.append(content[1])  # 参数类型列表
+            fcArgsValueList.append(content[3])  # 参数数据列表
 
     print(fcArgsTypeList)
-    if len(fcArgsTypeList)>0 and fcArgsTypeList[0] in structDict:
+    if len(fcArgsTypeList) > 0 and fcArgsTypeList[0] in structDict:
         createFunction(fcName, fcArgsTypeList, fcArgsValueList)
-        
+
     # 生成.h文件中的主动函数部分
     if 'Req' in fcName:
         req_line = 'int req' + fcName[3:] + '(dict req);\n'
@@ -241,7 +239,7 @@ def createFunction(fcName, fcArgsTypeList, fcArgsValueList):
 
     ffunction.write('int ' + apiName + '::req' + fcName[3:] + '(dict req)\n')
     ffunction.write('{\n')
-    ffunction.write('\t' + type_ +' myreq = ' + type_ + '();\n')
+    ffunction.write('\t' + type_ + ' myreq = ' + type_ + '();\n')
     ffunction.write('\tmemset(&myreq, 0, sizeof(myreq));\n')
 
     for key, value in list(struct.items()):
@@ -264,8 +262,6 @@ def createFunction(fcName, fcArgsTypeList, fcArgsValueList):
 
     ffunction.write('};\n')
     ffunction.write('\n')
-
-
 
 
 #########################################################

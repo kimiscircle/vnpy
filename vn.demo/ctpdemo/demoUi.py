@@ -8,8 +8,6 @@ Monitor主要负责监控数据，有部分包含主动功能。
 Widget主要用于调用主动功能，有部分包含数据监控。
 """
 
-
-
 import time
 import sys
 import shelve
@@ -21,13 +19,12 @@ from PyQt4 import QtCore, QtGui
 from eventEngine import *
 
 
-
 ########################################################################
 class LogMonitor(QtGui.QTableWidget):
     """用于显示日志"""
     signal = QtCore.pyqtSignal(type(Event()))
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, parent=None):
         """Constructor"""
         super(LogMonitor, self).__init__(parent)
@@ -36,7 +33,7 @@ class LogMonitor(QtGui.QTableWidget):
         self.initUi()
         self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
         self.setWindowTitle('日志')
@@ -44,14 +41,15 @@ class LogMonitor(QtGui.QTableWidget):
         self.setColumnCount(2)
         self.setHorizontalHeaderLabels(['时间', '日志'])
 
-        self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
-        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态
+        self.verticalHeader().setVisible(False)  # 关闭左边的垂直表头
+        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)  # 设为不可编辑状态
 
         # 自动调整列宽
         self.horizontalHeader().setResizeMode(0, QtGui.QHeaderView.ResizeToContents)
-        self.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)        
+        self.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
 
-    #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+
     def registerEvent(self):
         """注册事件监听"""
         # Qt图形组件的GUI更新必须使用Signal/Slot机制，否则有可能导致程序崩溃
@@ -60,22 +58,22 @@ class LogMonitor(QtGui.QTableWidget):
         self.signal.connect(self.updateLog)
         self.__eventEngine.register(EVENT_LOG, self.signal.emit)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateLog(self, event):
         """更新日志"""
         # 获取当前时间和日志内容
-        t = time.strftime('%H:%M:%S',time.localtime(time.time()))   
-        log = event.dict_['log']                                    
+        t = time.strftime('%H:%M:%S', time.localtime(time.time()))
+        log = event.dict_['log']
 
         # 在表格最上方插入一行
-        self.insertRow(0)              
+        self.insertRow(0)
 
         # 创建单元格
-        cellTime = QtGui.QTableWidgetItem(t)    
+        cellTime = QtGui.QTableWidgetItem(t)
         cellLog = QtGui.QTableWidgetItem(log)
 
         # 将单元格插入表格
-        self.setItem(0, 0, cellTime)            
+        self.setItem(0, 0, cellTime)
         self.setItem(0, 1, cellLog)
 
 
@@ -98,18 +96,18 @@ class AccountMonitor(QtGui.QTableWidget):
     dictLabels['WithdrawQuota'] = '可取资金'
     dictLabels['Balance'] = '账户资金'
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, parent=None):
         """Constructor"""
         super(AccountMonitor, self).__init__(parent)
         self.__eventEngine = eventEngine
 
-        self.dictAccount = {}	    # 用来保存账户对应的单元格
+        self.dictAccount = {}  # 用来保存账户对应的单元格
 
         self.initUi()
         self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         self.setWindowTitle('账户')
@@ -117,16 +115,16 @@ class AccountMonitor(QtGui.QTableWidget):
         self.setColumnCount(len(self.dictLabels))
         self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
-        self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
-        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态	
+        self.verticalHeader().setVisible(False)  # 关闭左边的垂直表头
+        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)  # 设为不可编辑状态
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def registerEvent(self):
         """"""
         self.signal.connect(self.updateAccount)
         self.__eventEngine.register(EVENT_ACCOUNT, self.signal.emit)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateAccount(self, event):
         """"""
         data = event.dict_['data']
@@ -197,7 +195,7 @@ class TradeMonitor(QtGui.QTableWidget):
     dictDirection['O'] = 'SF合并'
     dictDirection['P'] = '备兑'
     dictDirection['Q'] = '证券冻结/解冻'
-    dictDirection['R'] = '行权'      
+    dictDirection['R'] = '行权'
 
     dictOffset = {}
     dictOffset['0'] = '开仓'
@@ -208,16 +206,16 @@ class TradeMonitor(QtGui.QTableWidget):
     dictOffset['5'] = '强减'
     dictOffset['6'] = '本地强平'
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, parent=None):
         """Constructor"""
         super(TradeMonitor, self).__init__(parent)
         self.__eventEngine = eventEngine
 
         self.initUi()
-        self.registerEvent()	
+        self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         self.setWindowTitle('成交')
@@ -225,16 +223,16 @@ class TradeMonitor(QtGui.QTableWidget):
         self.setColumnCount(len(self.dictLabels))
         self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
-        self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
-        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态	
+        self.verticalHeader().setVisible(False)  # 关闭左边的垂直表头
+        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)  # 设为不可编辑状态
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def registerEvent(self):
         """"""
         self.signal.connect(self.updateTrade)
         self.__eventEngine.register(EVENT_TRADE, self.signal.emit)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateTrade(self, event):
         """"""
         data = event.dict_['data']
@@ -278,18 +276,18 @@ class PositionMonitor(QtGui.QTableWidget):
     dictPosiDirection['2'] = '多'
     dictPosiDirection['3'] = '空'
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, parent=None):
         """Constructor"""
         super(PositionMonitor, self).__init__(parent)
         self.__eventEngine = eventEngine
 
-        self.dictPosition = {}	    # 用来保存持仓对应的单元格
+        self.dictPosition = {}  # 用来保存持仓对应的单元格
 
         self.initUi()
         self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         self.setWindowTitle('持仓')
@@ -297,16 +295,16 @@ class PositionMonitor(QtGui.QTableWidget):
         self.setColumnCount(len(self.dictLabels))
         self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
-        self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
-        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态	
+        self.verticalHeader().setVisible(False)  # 关闭左边的垂直表头
+        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)  # 设为不可编辑状态
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def registerEvent(self):
         """"""
         self.signal.connect(self.updatePosition)
         self.__eventEngine.register(EVENT_POSITION, self.signal.emit)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updatePosition(self, event):
         """"""
         data = event.dict_['data']
@@ -326,7 +324,7 @@ class PositionMonitor(QtGui.QTableWidget):
                         except KeyError:
                             value = '未知类型'
                     else:
-                        value = str(data[label])	
+                        value = str(data[label])
                     cell.setText(value)
             # 否则插入新的一行，并更新
             else:
@@ -395,7 +393,7 @@ class OrderMonitor(QtGui.QTableWidget):
     dictDirection['O'] = 'SF合并'
     dictDirection['P'] = '备兑'
     dictDirection['Q'] = '证券冻结/解冻'
-    dictDirection['R'] = '行权'          
+    dictDirection['R'] = '行权'
 
     dictOffset = {}
     dictOffset['0'] = '开仓'
@@ -404,22 +402,22 @@ class OrderMonitor(QtGui.QTableWidget):
     dictOffset['3'] = '平今'
     dictOffset['4'] = '平昨'
     dictOffset['5'] = '强减'
-    dictOffset['6'] = '本地强平'    
+    dictOffset['6'] = '本地强平'
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, mainEngine, parent=None):
         """Constructor"""
         super(OrderMonitor, self).__init__(parent)
         self.__eventEngine = eventEngine
         self.__mainEngine = mainEngine
 
-        self.dictOrder = {}	    # 用来保存报单号对应的单元格对象
-        self.dictOrderData = {}	    # 用来保存报单数据
+        self.dictOrder = {}  # 用来保存报单号对应的单元格对象
+        self.dictOrderData = {}  # 用来保存报单数据
 
         self.initUi()
         self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         self.setWindowTitle('报单')
@@ -427,10 +425,10 @@ class OrderMonitor(QtGui.QTableWidget):
         self.setColumnCount(len(self.dictLabels))
         self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
-        self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
-        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态
+        self.verticalHeader().setVisible(False)  # 关闭左边的垂直表头
+        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)  # 设为不可编辑状态
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def registerEvent(self):
         """"""
         self.signal.connect(self.updateOrder)
@@ -438,7 +436,7 @@ class OrderMonitor(QtGui.QTableWidget):
 
         self.itemDoubleClicked.connect(self.cancelOrder)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateOrder(self, event):
         """"""
         data = event.dict_['data']
@@ -464,7 +462,7 @@ class OrderMonitor(QtGui.QTableWidget):
                 elif label == 'StatusMsg':
                     value = data[label].decode('gbk')
                 else:
-                    value = str(data[label])	
+                    value = str(data[label])
 
                 cell.setText(value)
         # 否则插入新的一行，并更新
@@ -484,19 +482,19 @@ class OrderMonitor(QtGui.QTableWidget):
                     except KeyError:
                         value = '未知类型'
                 elif label == 'StatusMsg':
-                    value = data[label].decode('gbk')		
+                    value = data[label].decode('gbk')
                 else:
-                    value = str(data[label])		
+                    value = str(data[label])
 
                 cell = QtGui.QTableWidgetItem(value)
                 self.setItem(0, col, cell)
                 d[label] = cell
 
-                cell.orderref =	orderref    # 动态绑定报单号到单元格上
+                cell.orderref = orderref  # 动态绑定报单号到单元格上
 
             self.dictOrder[orderref] = d
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def cancelOrder(self, cell):
         """双击撤单"""
         orderref = cell.orderref
@@ -510,7 +508,7 @@ class OrderMonitor(QtGui.QTableWidget):
                                           order['FrontID'],
                                           order['SessionID'])
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def cancelAll(self):
         """全撤"""
         for order in list(self.dictOrderData.values()):
@@ -519,7 +517,7 @@ class OrderMonitor(QtGui.QTableWidget):
                                               order['ExchangeID'],
                                               order['OrderRef'],
                                               order['FrontID'],
-                                              order['SessionID'])	
+                                              order['SessionID'])
 
 
 ########################################################################
@@ -542,8 +540,7 @@ class MarketDataMonitor(QtGui.QTableWidget):
 
     dictLabels['UpdateTime'] = '更新时间'
 
-
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, mainEngine, parent=None):
         """Constructor"""
         super(MarketDataMonitor, self).__init__(parent)
@@ -555,7 +552,7 @@ class MarketDataMonitor(QtGui.QTableWidget):
         self.initUi()
         self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         self.setWindowTitle('行情')
@@ -563,16 +560,16 @@ class MarketDataMonitor(QtGui.QTableWidget):
         self.setColumnCount(len(self.dictLabels))
         self.setHorizontalHeaderLabels(list(self.dictLabels.values()))
 
-        self.verticalHeader().setVisible(False)                 # 关闭左边的垂直表头
-        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers) # 设为不可编辑状态
+        self.verticalHeader().setVisible(False)  # 关闭左边的垂直表头
+        self.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)  # 设为不可编辑状态
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def registerEvent(self):
         """"""
         self.signal.connect(self.updateData)
         self.__eventEngine.register(EVENT_MARKETDATA, self.signal.emit)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateData(self, event):
         """"""
         data = event.dict_['data']
@@ -584,7 +581,7 @@ class MarketDataMonitor(QtGui.QTableWidget):
 
             for label, cell in list(d.items()):
                 if label != 'Name':
-                    value = str(data[label])	
+                    value = str(data[label])
                 else:
                     value = self.getName(data['InstrumentID'])
                 cell.setText(value)
@@ -596,19 +593,19 @@ class MarketDataMonitor(QtGui.QTableWidget):
 
             for col, label in enumerate(self.dictLabels.keys()):
                 if label != 'Name':
-                    value = str(data[label])				    
+                    value = str(data[label])
                     cell = QtGui.QTableWidgetItem(value)
                     self.setItem(row, col, cell)
                     d[label] = cell
                 else:
-                    name = self.getName(data['InstrumentID'])			    
-                    cell = QtGui.QTableWidgetItem(name)	
+                    name = self.getName(data['InstrumentID'])
+                    cell = QtGui.QTableWidgetItem(name)
                     self.setItem(row, col, cell)
                     d[label] = cell
 
             self.dictData[instrumentid] = d
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def getName(self, instrumentid):
         """获取名称"""
         instrument = self.__mainEngine.selectInstrument(instrumentid)
@@ -622,7 +619,7 @@ class MarketDataMonitor(QtGui.QTableWidget):
 class LoginWidget(QtGui.QDialog):
     """登录"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, mainEngine, parent=None):
         """Constructor"""
         super(LoginWidget, self).__init__()
@@ -631,7 +628,7 @@ class LoginWidget(QtGui.QDialog):
         self.initUi()
         self.loadData()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
         self.setWindowTitle('登录')
@@ -677,7 +674,7 @@ class LoginWidget(QtGui.QDialog):
 
         self.setLayout(grid)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def login(self):
         """登录"""
         userid = str(self.editUserID.text())
@@ -689,7 +686,7 @@ class LoginWidget(QtGui.QDialog):
         self.__mainEngine.login(userid, password, brokerid, mdAddress, tdAddress)
         self.close()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def loadData(self):
         """读取数据"""
         f = shelve.open('setting.vn')
@@ -712,7 +709,7 @@ class LoginWidget(QtGui.QDialog):
 
         f.close()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def saveData(self):
         """保存数据"""
         setting = {}
@@ -724,21 +721,21 @@ class LoginWidget(QtGui.QDialog):
 
         f = shelve.open('setting.vn')
         f['login'] = setting
-        f.close()	
+        f.close()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def closeEvent(self, event):
         """关闭事件处理"""
         # 当窗口被关闭时，先保存登录数据，再关闭
         self.saveData()
-        event.accept()  	
+        event.accept()
 
 
 ########################################################################
 class ControlWidget(QtGui.QWidget):
     """调用查询函数"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, mainEngine, parent=None):
         """Constructor"""
         super(ControlWidget, self).__init__()
@@ -746,7 +743,7 @@ class ControlWidget(QtGui.QWidget):
 
         self.initUi()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         self.setWindowTitle('测试')
@@ -774,7 +771,7 @@ class TradingWidget(QtGui.QWidget):
 
     dictDirection = OrderedDict()
     dictDirection['0'] = '买'
-    dictDirection['1'] = '卖'  
+    dictDirection['1'] = '卖'
 
     dictOffset = OrderedDict()
     dictOffset['0'] = '开仓'
@@ -792,7 +789,7 @@ class TradingWidget(QtGui.QWidget):
     dictOffsetReverse = {value: key for key, value in list(dictOffset.items())}
     dictPriceTypeReverse = {value: key for key, value in list(dictPriceType.items())}
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, mainEngine, orderMonitor, parent=None):
         """Constructor"""
         super(TradingWidget, self).__init__()
@@ -805,7 +802,7 @@ class TradingWidget(QtGui.QWidget):
         self.initUi()
         self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """初始化界面"""
         self.setWindowTitle('交易')
@@ -854,7 +851,7 @@ class TradingWidget(QtGui.QWidget):
         gridleft.addWidget(self.comboOffset, 3, 1)
         gridleft.addWidget(self.spinPrice, 4, 1)
         gridleft.addWidget(self.spinVolume, 5, 1)
-        gridleft.addWidget(self.comboPriceType, 6, 1)	
+        gridleft.addWidget(self.comboPriceType, 6, 1)
 
         # 右边部分
         labelBid1 = QtGui.QLabel('买一')
@@ -878,7 +875,7 @@ class TradingWidget(QtGui.QWidget):
         self.labelBidVolume2 = QtGui.QLabel()
         self.labelBidVolume3 = QtGui.QLabel()
         self.labelBidVolume4 = QtGui.QLabel()
-        self.labelBidVolume5 = QtGui.QLabel()	
+        self.labelBidVolume5 = QtGui.QLabel()
 
         self.labelAskPrice1 = QtGui.QLabel()
         self.labelAskPrice2 = QtGui.QLabel()
@@ -921,7 +918,7 @@ class TradingWidget(QtGui.QWidget):
         gridRight.addWidget(self.labelBidPrice2, 7, 1)
         gridRight.addWidget(self.labelBidPrice3, 8, 1)
         gridRight.addWidget(self.labelBidPrice4, 9, 1)
-        gridRight.addWidget(self.labelBidPrice5, 10, 1)	
+        gridRight.addWidget(self.labelBidPrice5, 10, 1)
 
         gridRight.addWidget(self.labelAskVolume5, 0, 2)
         gridRight.addWidget(self.labelAskVolume4, 1, 2)
@@ -956,7 +953,7 @@ class TradingWidget(QtGui.QWidget):
         buttonCancelAll.clicked.connect(self.__orderMonitor.cancelAll)
         self.lineID.returnPressed.connect(self.updateID)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateID(self):
         """合约变化"""
         instrumentid = str(self.lineID.text())
@@ -980,7 +977,7 @@ class TradingWidget(QtGui.QWidget):
             self.labelBidVolume2.setText('')
             self.labelBidVolume3.setText('')
             self.labelBidVolume4.setText('')
-            self.labelBidVolume5.setText('')	
+            self.labelBidVolume5.setText('')
             self.labelAskPrice1.setText('')
             self.labelAskPrice2.setText('')
             self.labelAskPrice3.setText('')
@@ -995,8 +992,8 @@ class TradingWidget(QtGui.QWidget):
             self.labelReturn.setText('')
 
             # 重新注册事件监听
-            self.__eventEngine.unregister(EVENT_MARKETDATA_CONTRACT+self.instrumentid, self.signal.emit)
-            self.__eventEngine.register(EVENT_MARKETDATA_CONTRACT+instrumentid, self.signal.emit)
+            self.__eventEngine.unregister(EVENT_MARKETDATA_CONTRACT + self.instrumentid, self.signal.emit)
+            self.__eventEngine.register(EVENT_MARKETDATA_CONTRACT + instrumentid, self.signal.emit)
 
             # 订阅合约
             self.__mainEngine.subscribe(instrumentid, instrument['ExchangeID'])
@@ -1004,7 +1001,7 @@ class TradingWidget(QtGui.QWidget):
             # 更新目前的合约
             self.instrumentid = instrumentid
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateMarketData(self, event):
         """更新行情"""
         data = event.dict_['data']
@@ -1014,7 +1011,7 @@ class TradingWidget(QtGui.QWidget):
             self.labelAskPrice1.setText(str(data['AskPrice1']))
             self.labelBidVolume1.setText(str(data['BidVolume1']))
             self.labelAskVolume1.setText(str(data['AskVolume1']))
-            
+
             if data['BidVolume2']:
                 self.labelBidPrice2.setText(str(data['BidPrice2']))
                 self.labelBidPrice3.setText(str(data['BidPrice3']))
@@ -1025,27 +1022,27 @@ class TradingWidget(QtGui.QWidget):
                 self.labelAskPrice3.setText(str(data['AskPrice3']))
                 self.labelAskPrice4.setText(str(data['AskPrice4']))
                 self.labelAskPrice5.setText(str(data['AskPrice5']))
-            
+
                 self.labelBidVolume2.setText(str(data['BidVolume2']))
                 self.labelBidVolume3.setText(str(data['BidVolume3']))
                 self.labelBidVolume4.setText(str(data['BidVolume4']))
                 self.labelBidVolume5.setText(str(data['BidVolume5']))
-                
+
                 self.labelAskVolume2.setText(str(data['AskVolume2']))
                 self.labelAskVolume3.setText(str(data['AskVolume3']))
                 self.labelAskVolume4.setText(str(data['AskVolume4']))
-                self.labelAskVolume5.setText(str(data['AskVolume5']))	
+                self.labelAskVolume5.setText(str(data['AskVolume5']))
 
             self.labelLastPrice.setText(str(data['LastPrice']))
-            rt = (data['LastPrice']/data['PreClosePrice'])-1
-            self.labelReturn.setText(('%.2f' %(rt*100))+'%')
+            rt = (data['LastPrice'] / data['PreClosePrice']) - 1
+            self.labelReturn.setText(('%.2f' % (rt * 100)) + '%')
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def registerEvent(self):
         """注册事件监听"""
         self.signal.connect(self.updateMarketData)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def sendOrder(self):
         """发单"""
         instrumentid = str(self.lineID.text())
@@ -1058,21 +1055,21 @@ class TradingWidget(QtGui.QWidget):
             price = float(self.spinPrice.value())
             volume = int(self.spinVolume.value())
             pricetype = self.dictPriceTypeReverse[str(self.comboPriceType.currentText())]
-            self.__mainEngine.sendOrder(instrumentid, exchangeid, price, pricetype, volume ,direction, offset)
+            self.__mainEngine.sendOrder(instrumentid, exchangeid, price, pricetype, volume, direction, offset)
 
 
 ########################################################################
 class AboutWidget(QtGui.QDialog):
     """显示关于信息"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, parent):
         """Constructor"""
         super(AboutWidget, self).__init__(parent)
 
         self.initUi()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         self.setWindowTitle('关于')
@@ -1128,7 +1125,7 @@ class MainWindow(QtGui.QMainWindow):
     signalInvestor = QtCore.pyqtSignal(type(Event()))
     signalLog = QtCore.pyqtSignal(type(Event()))
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, eventEngine, mainEngine):
         """Constructor"""
         super(MainWindow, self).__init__()
@@ -1138,7 +1135,7 @@ class MainWindow(QtGui.QMainWindow):
         self.initUi()
         self.registerEvent()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def initUi(self):
         """"""
         # 设置名称
@@ -1194,7 +1191,7 @@ class MainWindow(QtGui.QMainWindow):
         actionExit.triggered.connect(self.close)
 
         actionAbout = QtGui.QAction('关于', self)
-        actionAbout.triggered.connect(self.openAboutWidget)		
+        actionAbout.triggered.connect(self.openAboutWidget)
 
         menubar = self.menuBar()
         sysMenu = menubar.addMenu('系统')
@@ -1204,7 +1201,7 @@ class MainWindow(QtGui.QMainWindow):
         helpMenu = menubar.addMenu('帮助')
         helpMenu.addAction(actionAbout)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def registerEvent(self):
         """"""
         self.signalInvestor.connect(self.updateInvestor)
@@ -1213,21 +1210,21 @@ class MainWindow(QtGui.QMainWindow):
         self.__eventEngine.register(EVENT_INVESTOR, self.signalInvestor.emit)
         self.__eventEngine.register(EVENT_LOG, self.signalLog.emit)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateInvestor(self, event):
         """"""
         data = event.dict_['data']
 
         self.setWindowTitle('欢迎使用vn.py框架Demo  ' + data['InvestorName'].decode('GBK'))
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def updateLog(self, event):
         """"""
         log = event.dict_['log']
 
         self.bar.showMessage(log)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def openLoginWidget(self):
         """打开登录"""
         try:
@@ -1236,7 +1233,7 @@ class MainWindow(QtGui.QMainWindow):
             self.loginW = LoginWidget(self.__mainEngine, self)
             self.loginW.show()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def openAboutWidget(self):
         """打开关于"""
         try:
@@ -1245,7 +1242,7 @@ class MainWindow(QtGui.QMainWindow):
             self.aboutW = AboutWidget(self)
             self.aboutW.show()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def closeEvent(self, event):
         """退出事件处理"""
         reply = QtGui.QMessageBox.question(self, '退出',
@@ -1256,14 +1253,4 @@ class MainWindow(QtGui.QMainWindow):
             self.__mainEngine.exit()
             event.accept()
         else:
-            event.ignore()       
-
-
-
-
-
-
-
-
-
-
+            event.ignore()

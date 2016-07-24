@@ -2,7 +2,6 @@
 
 '''一个简单的通联数据客户端，主要使用requests开发，比通联官网的python例子更为简洁。'''
 
-
 import requests
 import json
 
@@ -16,18 +15,18 @@ class DatayesClient(object):
 
     name = '通联数据客户端'
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self):
         """Constructor"""
-        self.domain = ''    # 主域名
-        self.version = ''   # API版本
-        self.token = ''     # 授权码
-        self.header = {}    # http请求头部
+        self.domain = ''  # 主域名
+        self.version = ''  # API版本
+        self.token = ''  # 授权码
+        self.header = {}  # http请求头部
         self.settingLoaded = False  # 配置是否已经读取
-        
+
         self.loadSetting()
-        
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def loadSetting(self):
         """载入配置"""
         try:
@@ -35,7 +34,7 @@ class DatayesClient(object):
         except IOError:
             print('%s无法打开配置文件' % self.name)
             return
-        
+
         setting = json.load(f)
         try:
             self.domain = str(setting['domain'])
@@ -44,15 +43,14 @@ class DatayesClient(object):
         except KeyError:
             print('%s配置文件字段缺失' % self.name)
             return
-        
+
         self.header['Connection'] = 'keep_alive'
         self.header['Authorization'] = 'Bearer ' + self.token
         self.settingLoaded = True
 
         print('%s配置载入完成' % self.name)
-        
-    
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def downloadData(self, path, params):
         """下载数据"""
         if not self.settingLoaded:
@@ -61,7 +59,7 @@ class DatayesClient(object):
         else:
             url = '/'.join([self.domain, self.version, path])
             r = requests.get(url=url, headers=self.header, params=params)
-            
+
             if r.status_code != HTTP_OK:
                 print('%shttp请求失败，状态代码%s' % (self.name, r.status_code))
                 return None
@@ -75,7 +73,3 @@ class DatayesClient(object):
                     elif 'message' in result:
                         print('%s查询失败，返回信息%s' % (self.name, result['message']))
                     return None
-                    
-                    
-    
-    
